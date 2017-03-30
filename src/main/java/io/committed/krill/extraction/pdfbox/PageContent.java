@@ -86,7 +86,6 @@ public class PageContent {
    * </p>
    *
    * @return the image locations
-   * @returns the images
    */
   public List<Rectangle2D> getImageLocations() {
     return imageLocations;

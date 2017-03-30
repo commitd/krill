@@ -18,7 +18,7 @@ import org.apache.tika.metadata.Metadata;
  * 'div.slide-content' to be a slide, or even simplify identify the entire document as a slideshow.
  * </p>
  *
- * </p>
+ * <p>
  * Implementations of this should be plugin into {@link TikaFormatExtractor} through addProcessor
  * function.
  * </p>

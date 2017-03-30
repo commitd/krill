@@ -24,13 +24,11 @@ import org.jsoup.nodes.Element;
  * <p>
  * Note that:
  * </p>
- * <p>
  * <ul>
  * <li>PPTX outputs page number into the notes... if the notes exist
  * <li>PPTX does not have any list items, just paragraphs
  * <li>Neither format has grouping of information by text box
  * </ul>
- * </p>
  */
 public class PowerpointFormatProcessor extends AbstractJsoupFormatProcessor {
 

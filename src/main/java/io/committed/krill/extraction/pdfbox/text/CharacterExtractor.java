@@ -33,9 +33,9 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * Called by {@link PdfStripper}, this class extracts {@link Text} objects representing characters
- * on a page. To help save memory it caches both computed {@link Style}s and the {@link Glyph2D}s
- * (essentially Java2D {@link GeneralPath paths} for each rendered character) used to calculate
- * character bounding boxes.
+ * on a page. To help save memory it caches both computed {@link Style}s (essentially Java2D
+ * {@link GeneralPath paths} for each rendered character) used to calculate character bounding
+ * boxes.
  */
 public class CharacterExtractor {
 
