@@ -1,0 +1,55 @@
+collectionreader:
+  class: FolderReader
+  contentExtractor: StructureContentExtractor
+#  contentManipulators:
+#  - RemoveEmptyText
+#  contentMappers:
+#  - RemoveEmptyText
+  folders:
+  - ./input
+
+annotators:
+- language.OpenNLP
+- regex.Area
+- regex.BritishArmyUnits
+- regex.Callsign
+- regex.Date
+- regex.DateTime
+- regex.Dtg
+- regex.Time
+- regex.TimeQuantity
+- regex.Distance
+- regex.Email
+- regex.FlightNumber
+- regex.Frequency
+- regex.IpV4
+- regex.LatLon
+- regex.Mgrs
+- regex.Money
+- regex.Nationality
+- regex.Osgb
+- regex.Postcode
+- regex.TaskForce
+- regex.Telephone
+- regex.Url
+- regex.Volume
+- regex.Weight
+- cleaners.MergeAdjacentQuantities
+- grammatical.NPTitleEntity
+- grammatical.QuantityNPEntity
+- grammatical.TOLocationEntity
+- cleaners.RemoveLowConfidenceEntities
+- cleaners.RemoveNestedEntities
+- cleaners.RemoveNestedLocations
+- cleaners.NormalizeWhitespace
+- cleaners.CleanPunctuation
+- cleaners.AddTitleToPerson
+
+consumers:
+# print.Structures
+- class: StructuralHtml
+  outputFolder: ./output_structure
+  css: ../structural.css
+- class: Html5
+  outputFolder: ./output_entities
+  css: ../html.css

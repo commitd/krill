@@ -1,0 +1,40 @@
+html {
+  background-color: #eee;
+}
+
+body {
+  max-width: 1200px;
+  margin: 5px auto;
+  padding: 25px;
+}
+
+article {
+  padding: 25px;
+  background-color: #fff;
+  border: 1px solid black;
+  overflow: auto;
+  margin-bottom: 25px;
+}
+
+section, div {
+  margin: 5px;
+  padding: 25px;
+  border: 1px dashed #eee;
+  background-color: #fff;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #666;
+}
+
+th {
+  font-weight: bold;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  margin-left: -20px;
+}

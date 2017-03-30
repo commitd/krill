@@ -1,0 +1,8 @@
+/target/
+/.settings/
+.checkstyle
+.classpath
+.fbExcludeFilterFile
+.project
+baleen/sample
+baleen/output_entities

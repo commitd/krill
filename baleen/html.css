@@ -1,0 +1,28 @@
+html {
+  background-color: #eee;
+}
+
+body {
+  max-width: 1200px;
+  margin: 5px auto;
+  padding: 25px;
+  background-color: #fff;
+  border: 1px solid black;
+
+}
+
+.baleen {
+  text-decoration: underline;
+}
+
+.Temporal {
+  color: #f00;
+}
+
+.Person {
+  color: #00f;
+}
+
+.Location {
+  color: #0f0;
+}

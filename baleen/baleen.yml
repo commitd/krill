@@ -1,0 +1,3 @@
+pipelines:
+- name: railroad
+  file: railroad-pipeline.yml
