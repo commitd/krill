@@ -22,7 +22,7 @@ public class TextFormatProcessor extends AbstractJsoupFormatProcessor {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * io.committed.krill.extraction.tika.processors.AbstractJsoupFormatProcessor#process(org.apache.
    * tika.metadata.Metadata, org.jsoup.nodes.Document)
@@ -35,6 +35,8 @@ public class TextFormatProcessor extends AbstractJsoupFormatProcessor {
       final Elements paragraphs = document.select("body > p");
       if (paragraphs.size() == 1 && isAllTextNodes(paragraphs.first())) {
         paragraphs.first().tagName("pre");
+        document.body().textNodes().forEach(TextNode::remove);
+        document.outputSettings().prettyPrint(false);
       }
     }
     return document;
