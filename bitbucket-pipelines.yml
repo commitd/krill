@@ -1,7 +1,0 @@
-image: maven:3.3.3
-pipelines:
-  default:
-    - step:
-        script:
-          - mvn -B -s settings.xml clean install
-          - mvn -B -s settings.xml sonar:sonar
