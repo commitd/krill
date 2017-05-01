@@ -1,5 +1,18 @@
 package io.committed.krill.extraction.pdfbox;
 
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+
 import io.committed.krill.extraction.pdfbox.interpretation.BlockTypeClassifier;
 import io.committed.krill.extraction.pdfbox.interpretation.BlockTypeLabel;
 import io.committed.krill.extraction.pdfbox.interpretation.LabellablePositioned;
@@ -12,18 +25,7 @@ import io.committed.krill.extraction.pdfbox.physical.Style;
 import io.committed.krill.extraction.pdfbox.physical.Text;
 import io.committed.krill.extraction.pdfbox.text.PageSegmenter;
 import io.committed.krill.extraction.pdfbox.text.SimplePageSegmenter;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
+import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
 
 /**
  * Extract structure from PDF files.
@@ -33,51 +35,49 @@ public class PdfStructuredExtractor {
   /** The Constant MAX_UNDERLINE_HEIGHT. */
   private static final double MAX_UNDERLINE_HEIGHT = 72 / 12d;
 
-  /** The emit absolution positioning. */
-  private final boolean emitAbsolutionPositioning;
-
   /** The pdf stripper. */
-  private final PdfStripper pdfStripper = new PdfStripper();
+  private final PdfStripper pdfStripper;
 
   /** The segmenter. */
-  private final PageSegmenter segmenter = new SimplePageSegmenter();
+  private final PageSegmenter segmenter;
 
   /** The reading order. */
-  private final ReadingOrder readingOrder = new XyCutReadingOrder();
+  private final ReadingOrder readingOrder;
+
+  /** The parser config. */
+  private final PdfParserConfig parserConfig;
 
   /**
    * Instantiates a new pdf structured extractor.
    */
   public PdfStructuredExtractor() {
-    this(false);
+    this(new PdfParserConfig());
   }
 
   /**
    * Instantiates a new pdf structured extractor.
    *
-   * @param emitAbsolutePositioning
-   *          the emit absolute positioning
+   * @param parserConfig the parser config
    */
-  public PdfStructuredExtractor(boolean emitAbsolutePositioning) {
-    emitAbsolutionPositioning = emitAbsolutePositioning;
+  public PdfStructuredExtractor(PdfParserConfig parserConfig) {
+    this.parserConfig = parserConfig;
+    pdfStripper = new PdfStripper();
+    segmenter = new SimplePageSegmenter(parserConfig);
+    readingOrder = new XyCutReadingOrder(parserConfig);
   }
 
   /**
    * Extract the content from a PDF file, extracting structure around the content as SAX events.
    *
-   * @param document
-   *          the {@link PDDocument} to extract.
-   * @param contentHandler
-   *          the SAX {@link ContentHandler} to send structure events too.
-   * @throws IOException
-   *           if an error occurs reading the document.
-   * @throws SAXException
-   *           if an error occurs creating SAX events.
+   * @param document the {@link PDDocument} to extract.
+   * @param contentHandler the SAX {@link ContentHandler} to send structure events too.
+   * @throws IOException if an error occurs reading the document.
+   * @throws SAXException if an error occurs creating SAX events.
    */
   public void processDocument(PDDocument document, ContentHandler contentHandler)
       throws IOException, SAXException {
-    BlockContentHandler handler = new BlockContentHandler(contentHandler,
-        emitAbsolutionPositioning);
+    BlockContentHandler handler =
+        new BlockContentHandler(contentHandler, parserConfig.isEmitAbsolutePositioning());
     handler.startDocument();
 
     BlockTypeClassifier blockClassifier = classifyBlocks(document);
@@ -95,8 +95,8 @@ public class PdfStructuredExtractor {
       Collection<LabellablePositioned> bodyBlocks = pageBlocks.stream()
           .filter(s -> !s.getLabels().contains(BlockTypeLabel.HEADER)
               && !s.getLabels().contains(BlockTypeLabel.FOOTER)
-              && (s.getPosition().getMaxY() >= blockClassifier.getHeaderRegionBottom())
-              && (s.getPosition().getMinY() <= blockClassifier.getFooterRegionTop()))
+              && s.getPosition().getMaxY() >= blockClassifier.getHeaderRegionBottom()
+              && s.getPosition().getMinY() <= blockClassifier.getFooterRegionTop())
           .collect(Collectors.toList());
       handler.emitBlocks(readingOrder.order(bodyBlocks));
 
@@ -114,11 +114,9 @@ public class PdfStructuredExtractor {
   /**
    * Classify blocks.
    *
-   * @param document
-   *          the document
+   * @param document the document
    * @return the block type classifier
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   private BlockTypeClassifier classifyBlocks(PDDocument document) throws IOException {
     BlockTypeClassifier blockClassifier = new SimpleBlockClassifier();
@@ -128,10 +126,10 @@ public class PdfStructuredExtractor {
       lines.addAll(content.getLines());
       lines.addAll(makeLines(content.getRectangles()));
       findUnderlines(content);
-      Collection<? extends LabellablePositioned> imageBlocks = content.getImageLocations().stream()
-          .map(ImageBlock::new).collect(Collectors.toList());
-      Collection<? extends LabellablePositioned> textBlocks = segmenter
-          .segment(content.getTextSequences(), lines);
+      Collection<? extends LabellablePositioned> imageBlocks =
+          content.getImageLocations().stream().map(ImageBlock::new).collect(Collectors.toList());
+      Collection<? extends LabellablePositioned> textBlocks =
+          segmenter.segment(content.getTextSequences(), lines);
 
       Collection<LabellablePositioned> blocks = new ArrayList<>();
       blocks.addAll(imageBlocks);
@@ -149,9 +147,8 @@ public class PdfStructuredExtractor {
    * Lines are encoded as both lines and rectangle commands in PDF files. This extracts very thin
    * rectangles as lines too.
    * </p>
-   * 
-   * @param rectangles
-   *          the rectangles
+   *
+   * @param rectangles the rectangles
    * @return the collection of extracted lines.
    */
   private Collection<Line2D> makeLines(List<Rectangle2D> rectangles) {
@@ -179,8 +176,7 @@ public class PdfStructuredExtractor {
   /**
    * Find underlines.
    *
-   * @param content
-   *          the content
+   * @param content the content
    */
   private void findUnderlines(PageContent content) {
     List<Rectangle2D> underlineCandidates = findUnderlineCandidates(content.getRectangles());
@@ -201,24 +197,22 @@ public class PdfStructuredExtractor {
 
   /**
    * Checks if is text is underlined by the line.
-   * 
+   *
    * <p>
    * PDF has no concept of underlining - it is achieved by drawing lines or rectangles in the right
    * place.
    * </p>
    *
-   * @param text
-   *          the text
-   * @param underline
-   *          the underline
+   * @param text the text
+   * @param underline the underline
    * @return true, if is underlined by
    */
   private boolean isUnderlinedBy(Text text, Rectangle2D underline) {
     // expand the underline vertically by twice it's height (this should compensate the gap between
     // non-descenders and the underline)
-    Rectangle2D.Double rectangle = new Rectangle2D.Double(underline.getMinX(),
-        underline.getMinY() - (2 * underline.getHeight()), underline.getWidth(),
-        underline.getHeight() * 3);
+    Rectangle2D.Double rectangle =
+        new Rectangle2D.Double(underline.getMinX(), underline.getMinY() - 2 * underline.getHeight(),
+            underline.getWidth(), underline.getHeight() * 3);
     Rectangle2D pos = text.getPosition();
 
     // test if the expanded underline intersects the baseline of the text
@@ -229,8 +223,7 @@ public class PdfStructuredExtractor {
   /**
    * Find underline candidates.
    *
-   * @param rectangles
-   *          the rectangles
+   * @param rectangles the rectangles
    * @return the list
    */
   private List<Rectangle2D> findUnderlineCandidates(List<Rectangle2D> rectangles) {

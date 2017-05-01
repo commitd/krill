@@ -1,8 +1,5 @@
 package io.committed.krill.extraction.pdfbox.text;
 
-import io.committed.krill.extraction.pdfbox.physical.Line;
-import io.committed.krill.extraction.pdfbox.physical.TextBlock;
-
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+
+import io.committed.krill.extraction.pdfbox.physical.Line;
+import io.committed.krill.extraction.pdfbox.physical.TextBlock;
 
 /**
  * A simple heuristic {@link TableExtractor}.
@@ -27,27 +27,20 @@ import java.util.Objects;
  */
 public class SimpleTableExtractor implements TableExtractor {
 
-  /**
-   * Temporary configuration variable to ignore overly terse tables (those with very dense amounts
-   * of text) set by system property class.getName().ignoreTerseTables. This is not a generic
-   * solution, but does prevent some multi-column documents being identified as tables.
-   */
-  private static final boolean IGNORE_TERSE_TABLES = !Boolean
-      .getBoolean(SimpleTableExtractor.class.getName() + ".ignoreTerseTables");
+  private boolean ignoreTerseTables;
 
   /**
-   * Temporary configuration variable to disable table extraction completely (this means that lines
-   * will be grouped into text blocks rather than tables). set by system property
-   * class.getName().disableTableExtraction
+   * Construct a simple table extractor.
+   *
+   * @param ignoreTerseTables true to ignore terse tables
    */
-  private static final boolean DISABLE_TABLE_EXTRACTION = Boolean
-      .getBoolean(SimpleTableExtractor.class.getName() + ".disableTableExtraction");
+  public SimpleTableExtractor(boolean ignoreTerseTables) {
+    this.ignoreTerseTables = ignoreTerseTables;
+  }
+
 
   @Override
   public TableResult findTables(List<Line> lineCandidates, Collection<Line2D> lines) {
-    if (DISABLE_TABLE_EXTRACTION) {
-      return new TableResult(lineCandidates, Collections.emptyList());
-    }
     List<LinesWithCommonBaseline> linesByBaseLine = groupByBaseline(lineCandidates);
     TableCandidateResult tableCandidateResult = gatherTableCandidates(linesByBaseLine);
 
@@ -69,8 +62,7 @@ public class SimpleTableExtractor implements TableExtractor {
   /**
    * Extract table.
    *
-   * @param candidate
-   *          the candidate
+   * @param candidate the candidate
    * @return the table block
    */
   private TableBlock extractTable(TableCandidate candidate) {
@@ -98,10 +90,8 @@ public class SimpleTableExtractor implements TableExtractor {
   /**
    * Make table block.
    *
-   * @param columns
-   *          the columns
-   * @param lineCount
-   *          the line count
+   * @param columns the columns
+   * @param lineCount the line count
    * @return the table block
    */
   private TableBlock makeTableBlock(List<Column> columns, int lineCount) {
@@ -128,7 +118,7 @@ public class SimpleTableExtractor implements TableExtractor {
       rows.add(new TableRow(cells));
     }
 
-    if (IGNORE_TERSE_TABLES && isTooTerse(rows)) {
+    if (!ignoreTerseTables && isTooTerse(rows)) {
       return null;
     }
 
@@ -138,8 +128,7 @@ public class SimpleTableExtractor implements TableExtractor {
   /**
    * Checks if is too terse.
    *
-   * @param rows
-   *          the rows
+   * @param rows the rows
    * @return true, if is too terse
    */
   private boolean isTooTerse(List<TableRow> rows) {
@@ -163,10 +152,8 @@ public class SimpleTableExtractor implements TableExtractor {
   /**
    * Find column.
    *
-   * @param columns
-   *          the columns
-   * @param line
-   *          the line
+   * @param columns the columns
+   * @param line the line
    * @return the column
    */
   private Column findColumn(List<Column> columns, Line line) {
@@ -181,10 +168,8 @@ public class SimpleTableExtractor implements TableExtractor {
   /**
    * Overlaps.
    *
-   * @param column
-   *          the column
-   * @param line
-   *          the line
+   * @param column the column
+   * @param line the line
    * @return true, if successful
    */
   private boolean overlaps(Column column, Line line) {
@@ -192,14 +177,13 @@ public class SimpleTableExtractor implements TableExtractor {
     double lineMaxX = line.getPosition().getMaxX();
     double columnMinX = column.getMinX();
     double columnMaxX = column.getMaxX();
-    return (columnMinX < lineMaxX) && ((lineMinX - columnMaxX) < 3f);
+    return columnMinX < lineMaxX && lineMinX - columnMaxX < 3f;
   }
 
   /**
    * Gather table candidates.
    *
-   * @param linesByBaseLine
-   *          the lines by base line
+   * @param linesByBaseLine the lines by base line
    * @return the table candidate result
    */
   private TableCandidateResult gatherTableCandidates(
@@ -230,8 +214,7 @@ public class SimpleTableExtractor implements TableExtractor {
   /**
    * Group by baseline.
    *
-   * @param lineCandidates
-   *          the line candidates
+   * @param lineCandidates the line candidates
    * @return the list
    */
   private List<LinesWithCommonBaseline> groupByBaseline(List<Line> lineCandidates) {

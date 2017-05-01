@@ -1,16 +1,16 @@
 package io.committed.krill.extraction.pdfbox.text;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+
 import com.google.common.base.CharMatcher;
 
 import io.committed.krill.extraction.pdfbox.physical.Line;
 import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
 import io.committed.krill.extraction.pdfbox.physical.Text;
 import io.committed.krill.extraction.pdfbox.physical.Word;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * A simple implementation of of WordSegmenter that only considers whitespace characters to break

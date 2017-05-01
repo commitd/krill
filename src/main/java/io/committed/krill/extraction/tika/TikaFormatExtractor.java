@@ -1,25 +1,13 @@
 package io.committed.krill.extraction.tika;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import io.committed.krill.extraction.Extraction;
-import io.committed.krill.extraction.FormatExtractor;
-import io.committed.krill.extraction.exception.ExtractionException;
-import io.committed.krill.extraction.impl.DefaultExtraction;
-import io.committed.krill.extraction.tika.parsers.CsvParser;
-import io.committed.krill.extraction.tika.parsers.JSoupHtmlParser;
-import io.committed.krill.extraction.tika.parsers.RtfParser;
-import io.committed.krill.extraction.tika.pdf.PdfParser;
-import io.committed.krill.extraction.tika.processors.CsvFormatProcessor;
-import io.committed.krill.extraction.tika.processors.ExcelFormatProcessor;
-import io.committed.krill.extraction.tika.processors.FormatProcessor;
-import io.committed.krill.extraction.tika.processors.HtmlFormatProcessor;
-import io.committed.krill.extraction.tika.processors.PdfFormatProcessor;
-import io.committed.krill.extraction.tika.processors.PowerpointFormatProcessor;
-import io.committed.krill.extraction.tika.processors.RtfFormatProcessor;
-import io.committed.krill.extraction.tika.processors.TextFormatProcessor;
-import io.committed.krill.extraction.tika.processors.WordFormatProcessor;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaMetadataKeys;
@@ -34,12 +22,22 @@ import org.apache.tika.sax.ToHTMLContentHandler;
 import org.apache.tika.sax.XHTMLContentHandler;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+
+import io.committed.krill.extraction.Extraction;
+import io.committed.krill.extraction.FormatExtractor;
+import io.committed.krill.extraction.exception.ExtractionException;
+import io.committed.krill.extraction.impl.DefaultExtraction;
+import io.committed.krill.extraction.tika.processors.CsvFormatProcessor;
+import io.committed.krill.extraction.tika.processors.ExcelFormatProcessor;
+import io.committed.krill.extraction.tika.processors.FormatProcessor;
+import io.committed.krill.extraction.tika.processors.HtmlFormatProcessor;
+import io.committed.krill.extraction.tika.processors.PdfFormatProcessor;
+import io.committed.krill.extraction.tika.processors.PowerpointFormatProcessor;
+import io.committed.krill.extraction.tika.processors.RtfFormatProcessor;
+import io.committed.krill.extraction.tika.processors.TextFormatProcessor;
+import io.committed.krill.extraction.tika.processors.WordFormatProcessor;
 
 /**
  * Extract HTML using Tika as the underlying reader.
@@ -82,13 +80,25 @@ public class TikaFormatExtractor implements FormatExtractor {
   private final TextFormatProcessor defaultProcessor = new TextFormatProcessor();
 
   /**
-   * Constructs a new {@link TikaFormatExtractor} with an {@link AutoDetectParser}.
+   * Constructs a new {@link TikaFormatExtractor} with an {@link AutoDetectParser} and all parsers.
+   *
    */
   public TikaFormatExtractor() {
-    this.parser = new AutoDetectParser();
-    this.context = new ParseContext();
+    this(new TikaFormatExtractorConfig.Builder().withDefaultParsers().build());
+  }
 
-    addParsers(new CsvParser(), new JSoupHtmlParser(), new PdfParser(), new RtfParser());
+  /**
+   * Constructs a new {@link TikaFormatExtractor} with an {@link AutoDetectParser} and the parsers
+   * provided by the configuration.
+   *
+   * @param config the configuration
+   *
+   */
+  public TikaFormatExtractor(TikaFormatExtractorConfig config) {
+    parser = new AutoDetectParser();
+    context = new ParseContext();
+
+    addParsers(config.getParsers());
 
     addProcessor(new CsvFormatProcessor(), "text/csv", "text/tab-separated-values");
     addProcessor(new ExcelFormatProcessor(), "application/vnd.ms-excel",
@@ -123,10 +133,8 @@ public class TikaFormatExtractor implements FormatExtractor {
   /**
    * Adds the format processor.
    *
-   * @param processor
-   *          the processor
-   * @param contentTypes
-   *          the content types to use the processor with
+   * @param processor the processor
+   * @param contentTypes the content types to use the processor with
    */
   private final void addProcessor(final FormatProcessor processor, final String... contentTypes) {
     Arrays.stream(contentTypes).forEach(k -> processors.put(k, processor));
@@ -156,10 +164,8 @@ public class TikaFormatExtractor implements FormatExtractor {
   /**
    * Process the HTML output by Tika through any relevant format processors.
    *
-   * @param metadata
-   *          the metadata
-   * @param html
-   *          the html
+   * @param metadata the metadata
+   * @param html the html
    * @return the string
    */
   private String postProcess(final Metadata metadata, final String html) {
@@ -183,8 +189,7 @@ public class TikaFormatExtractor implements FormatExtractor {
   /**
    * Convert metadata from Tika object into Multimap.
    *
-   * @param tika
-   *          the tika metadata
+   * @param tika the tika metadata
    * @return the multimap
    */
   private Multimap<String, String> convertMetadata(final Metadata tika) {
@@ -199,10 +204,9 @@ public class TikaFormatExtractor implements FormatExtractor {
   /**
    * Replace Tika's parser with our parse for specific media types.
    *
-   * @param newParsers
-   *          the list of parsers to add
+   * @param newParsers the list of parsers to add
    */
-  private final void addParsers(final Parser... newParsers) {
+  private final void addParsers(final List<Parser> newParsers) {
     final Map<MediaType, Parser> tikaParsers = parser.getParsers();
     for (final Parser newParser : newParsers) {
       final Set<MediaType> supportedTypes = newParser.getSupportedTypes(context);

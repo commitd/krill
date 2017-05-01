@@ -1,16 +1,17 @@
 package io.committed.krill.extraction.pdfbox.text;
 
-import io.committed.krill.extraction.pdfbox.interpretation.LabellablePositioned;
-import io.committed.krill.extraction.pdfbox.physical.Line;
-import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
-import io.committed.krill.extraction.pdfbox.physical.Text;
-import io.committed.krill.extraction.pdfbox.physical.TextBlock;
-
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
+import io.committed.krill.extraction.pdfbox.interpretation.LabellablePositioned;
+import io.committed.krill.extraction.pdfbox.physical.Line;
+import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
+import io.committed.krill.extraction.pdfbox.physical.Text;
+import io.committed.krill.extraction.pdfbox.physical.TextBlock;
+import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
 
 /**
  * Default implementation of PageSegmenter.
@@ -35,11 +36,11 @@ public class SimplePageSegmenter implements PageSegmenter {
   /**
    * Create a new {@link SimplePageSegmenter}.
    */
-  public SimplePageSegmenter() {
-    this.lineFinder = new BaselineLineFinder();
-    this.wordSegmenter = new WhitespaceWordSegmenter();
-    this.lineBlockGrouper = new XyCutBlockGrouper();
-    this.tableExtractor = new CombinedTableExtractor();
+  public SimplePageSegmenter(PdfParserConfig parserConfig) {
+    lineFinder = new BaselineLineFinder(parserConfig);
+    wordSegmenter = new WhitespaceWordSegmenter();
+    lineBlockGrouper = new XyCutBlockGrouper(parserConfig);
+    tableExtractor = new CombinedTableExtractor(parserConfig);
   }
 
   @Override
@@ -63,8 +64,7 @@ public class SimplePageSegmenter implements PageSegmenter {
   /**
    * Gather lines.
    *
-   * @param lineCandidates
-   *          the line candidates
+   * @param lineCandidates the line candidates
    * @return the array list
    */
   private ArrayList<Line> gatherLines(List<PositionedContainer<Text>> lineCandidates) {

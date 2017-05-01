@@ -1,11 +1,12 @@
 package io.committed.krill.extraction.pdfbox.text;
 
-import io.committed.krill.extraction.pdfbox.physical.Line;
-
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import io.committed.krill.extraction.pdfbox.physical.Line;
+import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
 
 /**
  * A TableExtractor that uses the {@link GridTableExtractor} followed by the
@@ -13,19 +14,31 @@ import java.util.List;
  */
 public class CombinedTableExtractor implements TableExtractor {
 
-  /** The grid table extractor. */
-  private final TableExtractor gridTableExtractor = new GridTableExtractor();
+  private final PdfParserConfig parserConfig;
 
-  /** The simple table extractor. */
-  private final TableExtractor simpleTableExtractor = new SimpleTableExtractor();
+  public CombinedTableExtractor(PdfParserConfig parserConfig) {
+    this.parserConfig = parserConfig;
+
+  }
 
   @Override
   public TableResult findTables(List<Line> lineCandidates, Collection<Line2D> lines) {
-    TableResult gridTables = gridTableExtractor.findTables(lineCandidates, lines);
-    TableResult simpleTables = simpleTableExtractor.findTables(gridTables.getRemainingLines(),
-        lines);
-    Collection<TableBlock> tables = new ArrayList<>(gridTables.getTableBlocks());
-    tables.addAll(simpleTables.getTableBlocks());
-    return new TableResult(simpleTables.getRemainingLines(), tables);
+    List<Line> remainingLines = lineCandidates;
+    Collection<TableBlock> tables = new ArrayList<>();
+    if (!parserConfig.isDisableGridTableExtraction()) {
+      GridTableExtractor extractor = new GridTableExtractor();
+      TableResult gridTables = extractor.findTables(remainingLines, lines);
+      tables.addAll(gridTables.getTableBlocks());
+      remainingLines = gridTables.getRemainingLines();
+
+    }
+    if (!parserConfig.isDisableSimpleTableExtraction()) {
+      TableExtractor extractor = new SimpleTableExtractor(parserConfig.isIgnoreTerseTables());
+      TableResult simpleTables = extractor.findTables(remainingLines, lines);
+      tables.addAll(simpleTables.getTableBlocks());
+      remainingLines = simpleTables.getRemainingLines();
+
+    }
+    return new TableResult(remainingLines, tables);
   }
 }

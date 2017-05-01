@@ -1,5 +1,13 @@
 package io.committed.krill.extraction.pdfbox.text;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.BiFunction;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeTraverser;
@@ -9,20 +17,24 @@ import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
 import io.committed.krill.extraction.pdfbox.physical.Style;
 import io.committed.krill.extraction.pdfbox.physical.TextBlock;
 import io.committed.krill.extraction.pdfbox.text.RecursiveXyCut.TreeNode;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.BiFunction;
+import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
 
 /**
  * A {@link LineBlockGrouper} that groups lines together that are within the blocks identified by
  * applying the recursive X-Y cut algorithm, using proximity heuristics.
  */
 public class XyCutBlockGrouper implements LineBlockGrouper {
+
+  private final PdfParserConfig parserConfig;
+
+  /**
+   * Construct an XyCutBlockGrouper.
+   *
+   * @param parserConfig the parser configuration
+   */
+  public XyCutBlockGrouper(PdfParserConfig parserConfig) {
+    this.parserConfig = parserConfig;
+  }
 
   @Override
   public List<TextBlock> group(Collection<Line> lines) {
@@ -37,8 +49,7 @@ public class XyCutBlockGrouper implements LineBlockGrouper {
   /**
    * Group by style.
    *
-   * @param lines
-   *          the lines
+   * @param lines the lines
    * @return the multimap
    */
   private static Multimap<Style, Line> groupByStyle(Collection<Line> lines) {
@@ -50,21 +61,21 @@ public class XyCutBlockGrouper implements LineBlockGrouper {
   /**
    * Find blocks.
    *
-   * @param lines
-   *          the lines
+   * @param lines the lines
    * @return the list
    */
   private List<TextBlock> findBlocks(Collection<Line> lines) {
     List<Line> sortedLines = LineSpacingUtils.sortByBaseline(lines);
 
-    TreeNode<PositionedContainer<Line>> root = new TreeNode<>(
-        new PositionedContainer<Line>(new ArrayList<>(sortedLines)));
+    TreeNode<PositionedContainer<Line>> root =
+        new TreeNode<>(new PositionedContainer<Line>(new ArrayList<>(sortedLines)));
 
-    new RecursiveXyCut<Line>(5, 5).apply(root);
+    new RecursiveXyCut<Line>(parserConfig.getGroupXSpacing(), parserConfig.getGroupYSpacing(),
+        parserConfig.getXyCutProjectionScale()).apply(root);
 
     List<TextBlock> blocks = new ArrayList<>();
-    TreeTraverser<TreeNode<PositionedContainer<Line>>> traverser = TreeTraverser
-        .using(TreeNode::getChildren);
+    TreeTraverser<TreeNode<PositionedContainer<Line>>> traverser =
+        TreeTraverser.using(TreeNode::getChildren);
     traverser.preOrderTraversal(root).forEach(s -> {
       List<Line> contents = s.getData().getContents();
       if (!contents.isEmpty()) {
@@ -88,10 +99,8 @@ public class XyCutBlockGrouper implements LineBlockGrouper {
   /**
    * Attempt merge one block.
    *
-   * @param blocks
-   *          the blocks
-   * @param mergeTester
-   *          the merge tester
+   * @param blocks the blocks
+   * @param mergeTester the merge tester
    */
   private void attemptMergeOneBlock(List<TextBlock> blocks,
       BiFunction<TextBlock, TextBlock, Boolean> mergeTester) {
@@ -122,10 +131,8 @@ public class XyCutBlockGrouper implements LineBlockGrouper {
   /**
    * Should merge X.
    *
-   * @param first
-   *          the first
-   * @param second
-   *          the second
+   * @param first the first
+   * @param second the second
    * @return true, if successful
    */
   private boolean shouldMergeX(TextBlock first, TextBlock second) {
@@ -142,17 +149,15 @@ public class XyCutBlockGrouper implements LineBlockGrouper {
     double characterWidth = first.getPosition().getWidth() / firstLength;
 
     // Allow adjacent blocks to be merged if they are close enough
-    double tolerance = 3 * characterWidth;
-    return (firstMaxX < secondMinX) && ((secondMinX - firstMaxX) < tolerance);
+    double tolerance = parserConfig.getSpacingCharacterTolerance() * characterWidth;
+    return firstMaxX < secondMinX && secondMinX - firstMaxX < tolerance;
   }
 
   /**
    * Should merge Y.
    *
-   * @param first
-   *          the first
-   * @param second
-   *          the second
+   * @param first the first
+   * @param second the second
    * @return true, if successful
    */
   protected boolean shouldMergeY(TextBlock first, TextBlock second) {
@@ -169,25 +174,25 @@ public class XyCutBlockGrouper implements LineBlockGrouper {
     // are spacings within the groups similar?
     int firstSpacing = LineSpacingUtils.mostFrequentBaselineSpacing(first.getContents());
     int secondSpacing = LineSpacingUtils.mostFrequentBaselineSpacing(second.getContents());
-    if (!((firstSpacing == 0 || secondSpacing == 0) ? true
-        : withinTolerance(firstSpacing, secondSpacing, 0.1))) {
+    if (!(firstSpacing == 0 || secondSpacing == 0 ? true
+        : withinTolerance(firstSpacing, secondSpacing, parserConfig.getSpacingGroupTolerance()))) {
       return false;
     }
 
     // is the first line of the new group close enough to the last line of the existing group?
     float firstLastBaseline = first.getContents().get(first.getContents().size() - 1).getBaseline();
-    double firstLineHeight = first.getContents().get(first.getContents().size() - 1).getPosition()
-        .getHeight();
+    double firstLineHeight =
+        first.getContents().get(first.getContents().size() - 1).getPosition().getHeight();
     float secondFirstBaseline = second.getContents().get(0).getBaseline();
 
-    int firstLineSpacing = (int) (0.75
-        * LineSpacingUtils.mostFrequentBaselineSpacing(first.getContents()));
-    int secondLineSpacing = (int) (0.75
-        * LineSpacingUtils.mostFrequentBaselineSpacing(first.getContents()));
+    int firstLineSpacing =
+        (int) (0.75 * LineSpacingUtils.mostFrequentBaselineSpacing(first.getContents()));
+    int secondLineSpacing =
+        (int) (0.75 * LineSpacingUtils.mostFrequentBaselineSpacing(first.getContents()));
 
     int spacingDifference = Math.round(Math.abs(firstLastBaseline - secondFirstBaseline));
-    if (spacingDifference > firstLineHeight * 2
-        || !withinTolerance(firstLineSpacing, secondLineSpacing, 0.25f)) {
+    if (spacingDifference > firstLineHeight * 2 || !withinTolerance(firstLineSpacing,
+        secondLineSpacing, parserConfig.getSpacingBreakTolerance())) {
       return false;
     }
 
@@ -197,12 +202,9 @@ public class XyCutBlockGrouper implements LineBlockGrouper {
   /**
    * Within tolerance.
    *
-   * @param x1
-   *          the x 1
-   * @param x2
-   *          the x 2
-   * @param tolerance
-   *          the tolerance
+   * @param x1 the x 1
+   * @param x2 the x 2
+   * @param tolerance the tolerance
    * @return true, if successful
    */
   private boolean withinTolerance(double x1, double x2, double tolerance) {

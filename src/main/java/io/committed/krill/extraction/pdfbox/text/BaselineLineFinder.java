@@ -1,5 +1,12 @@
 package io.committed.krill.extraction.pdfbox.text;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -7,13 +14,7 @@ import io.committed.krill.extraction.pdfbox.physical.Baselined;
 import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
 import io.committed.krill.extraction.pdfbox.physical.Style;
 import io.committed.krill.extraction.pdfbox.physical.Text;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
 
 /**
  * A {@link LineFinder} that identifies lines by grouping by {@link Style} and then by
@@ -29,6 +30,12 @@ public class BaselineLineFinder implements LineFinder {
 
   /** The Constant CONSIDER_TEXT_STREAM. */
   private static final boolean CONSIDER_TEXT_STREAM = true;
+
+  private final PdfParserConfig parserConfig;
+
+  public BaselineLineFinder(PdfParserConfig parserConfig) {
+    this.parserConfig = parserConfig;
+  }
 
   @Override
   public List<PositionedContainer<Text>> findLines(List<PositionedContainer<Text>> sequences) {
@@ -52,8 +59,7 @@ public class BaselineLineFinder implements LineFinder {
   /**
    * Collect text by style.
    *
-   * @param candidateLine
-   *          the candidate line
+   * @param candidateLine the candidate line
    * @return the map
    */
   private Map<Float, Collection<Text>> collectTextByStyle(ArrayList<Text> candidateLine) {
@@ -65,8 +71,7 @@ public class BaselineLineFinder implements LineFinder {
   /**
    * Find baseline lines.
    *
-   * @param texts
-   *          the texts
+   * @param texts the texts
    * @return the list
    */
   private List<ArrayList<Text>> findBaselineLines(Collection<Text> texts) {
@@ -99,16 +104,11 @@ public class BaselineLineFinder implements LineFinder {
   /**
    * Checks if is line break.
    *
-   * @param currentLine
-   *          the current line
-   * @param prevBaseLine
-   *          the prev base line
-   * @param cumulativeWidth
-   *          the cumulative width
-   * @param previous
-   *          the previous
-   * @param text
-   *          the text
+   * @param currentLine the current line
+   * @param prevBaseLine the prev base line
+   * @param cumulativeWidth the cumulative width
+   * @param previous the previous
+   * @param text the text
    * @return true, if is line break
    */
   private boolean isLineBreak(List<Text> currentLine, float prevBaseLine, float cumulativeWidth,
@@ -123,12 +123,9 @@ public class BaselineLineFinder implements LineFinder {
   /**
    * Checks if is too far away horizontally.
    *
-   * @param text
-   *          the text
-   * @param previous
-   *          the previous
-   * @param averageWidth
-   *          the average width
+   * @param text the text
+   * @param previous the previous
+   * @param averageWidth the average width
    * @return true, if is too far away horizontally
    */
   private boolean isTooFarAwayHorizontally(Text text, Text previous, float averageWidth) {
@@ -138,7 +135,7 @@ public class BaselineLineFinder implements LineFinder {
 
     double minX = text.getPosition().getMinX();
     double maxX = previous.getPosition().getMaxX();
-    return minX - maxX >= (3f * averageWidth);
+    return minX - maxX >= parserConfig.getMaxBaselineSeprationMultiplier() * averageWidth;
   }
 
 }

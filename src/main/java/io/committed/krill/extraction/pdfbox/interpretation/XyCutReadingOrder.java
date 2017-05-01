@@ -1,14 +1,15 @@
 package io.committed.krill.extraction.pdfbox.interpretation;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import com.google.common.collect.TreeTraverser;
 
 import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
 import io.committed.krill.extraction.pdfbox.text.RecursiveXyCut;
 import io.committed.krill.extraction.pdfbox.text.RecursiveXyCut.TreeNode;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
 
 /**
  * A {@link ReadingOrder} that uses the recursive x-y cut algorithm to determine a reading order.
@@ -21,17 +22,21 @@ import java.util.List;
  */
 public class XyCutReadingOrder implements ReadingOrder {
 
+  public XyCutReadingOrder(PdfParserConfig parserConfig) {
+    // TODO Auto-generated constructor stub
+  }
+
   @Override
   public List<LabellablePositioned> order(Collection<LabellablePositioned> blocks) {
 
-    TreeNode<PositionedContainer<LabellablePositioned>> root = new TreeNode<>(
-        new PositionedContainer<LabellablePositioned>(new ArrayList<>(blocks)));
+    TreeNode<PositionedContainer<LabellablePositioned>> root =
+        new TreeNode<>(new PositionedContainer<LabellablePositioned>(new ArrayList<>(blocks)));
 
-    new RecursiveXyCut<LabellablePositioned>(0, 0).apply(root);
+    new RecursiveXyCut<LabellablePositioned>(0, 0, 10).apply(root);
     List<LabellablePositioned> orderedBlocks = new ArrayList<>();
 
-    TreeTraverser<TreeNode<PositionedContainer<LabellablePositioned>>> traverser = TreeTraverser
-        .using(TreeNode::getChildren);
+    TreeTraverser<TreeNode<PositionedContainer<LabellablePositioned>>> traverser =
+        TreeTraverser.using(TreeNode::getChildren);
     traverser.preOrderTraversal(root).forEach(s -> orderedBlocks.addAll(s.getData().getContents()));
 
     return orderedBlocks;
