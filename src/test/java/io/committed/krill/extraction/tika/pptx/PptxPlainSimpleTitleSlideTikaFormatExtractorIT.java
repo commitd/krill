@@ -15,7 +15,7 @@ public class PptxPlainSimpleTitleSlideTikaFormatExtractorIT extends AbstractTika
   @Test
   public void testBody() {
     assertBody("" + "<main class=\"SlideShow\"> \n" + " <article class=\"Slide\"> \n"
-        + "  <section class=\"\"> \n" + "   <p>Title</p> \n" + "   <p>Subtitle</p> \n"
+        + "  <section> \n" + "   <p>Title</p> \n" + "   <p>Subtitle</p> \n"
         + "  </section> \n" + "  <aside> \n" + "   <p>Notes</p> \n" + "   <p>1</p> \n"
         + "  </aside> \n" + " </article> \n" + "</main>");
   }

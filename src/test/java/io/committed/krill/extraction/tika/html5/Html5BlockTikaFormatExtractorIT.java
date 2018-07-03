@@ -24,7 +24,7 @@ public class Html5BlockTikaFormatExtractorIT extends AbstractTikaFormatExtractor
             + "    A div can be used to define a new block element without any specific semantics. \n"
             + "  </div> \n"
             + "  <p>Sometimes it is useful to include larger blocks of preformatted text, which is typically rendered using a monospace font. This is useful when attempting to create diagrams using text:</p> \n"
-            + "  <pre>\n" + "    Top ---&amp;gt;        +----+\n" + "                    |    |\n"
+            + "  <pre>" + "    Top ---&amp;gt;        +----+\n" + "                    |    |\n"
             + " Bottom ---&amp;gt;        +----+\n" + "</pre> \n" + " </section> \n" + "</main>");
   }
 
