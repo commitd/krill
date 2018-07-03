@@ -5,7 +5,7 @@
 
 	<groupId>io.committed.krill</groupId>
 	<artifactId>krill</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<name>krill</name>
 	<description>Uses Apache Tika (https://tika.apache.org/) and PDFBox (https://pdfbox.apache.org/) with subsequent post processing to generate a HTML representation of a document (PDF, CSV, XLS, etc) together with it metadata.</description>
 	<url>http://github.com/commitd/krill</url>
@@ -44,19 +44,19 @@
 		<java.version>1.8</java.version>
 		<dependency.locations.enabled>false</dependency.locations.enabled>
 
-		<commons-io.version>2.5</commons-io.version>
+		<commons-io.version>2.6</commons-io.version>
 		<commons-csv.version>1.5</commons-csv.version>
-		<slf4j.version>1.7.19</slf4j.version>
-		<tika.version>1.16</tika.version>
-		<jbig2-imageio.version>3.0.0</jbig2-imageio.version>
-		<guava.version>23.0</guava.version>
-		<jsoup.version>1.10.3</jsoup.version>
+		<slf4j.version>1.7.25</slf4j.version>
+		<tika.version>1.18</tika.version>
+		<jbig2-imageio.version>3.0.1</jbig2-imageio.version>
+		<guava.version>25.1-jre</guava.version>
+		<jsoup.version>1.11.3</jsoup.version>
 
-		<assertj.version>3.8.0</assertj.version>
+		<assertj.version>3.10.0</assertj.version>
 		<junit.version>4.12</junit.version>
 		<!-- there is something odd with versioning of the expected-failure plugin -->
 		<junit.expected-failure.version>0.0.9</junit.expected-failure.version>
-		<mockito.version>1.10.19</mockito.version>
+		<mockito.version>2.19.0</mockito.version>
 
 		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
 		<maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
@@ -151,7 +151,7 @@
 
 		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
+			<artifactId>mockito-core</artifactId>
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>

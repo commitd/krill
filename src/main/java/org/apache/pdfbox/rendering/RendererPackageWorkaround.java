@@ -27,7 +27,7 @@ public class RendererPackageWorkaround {
    */
   public RendererPackageWorkaround() throws RuntimeException {
     try {
-      pageDrawer = new PageDrawer(new PageDrawerParameters(null, null));
+      pageDrawer = new PageDrawer(new PageDrawerParameters(null, null, true));
       method = PageDrawer.class.getDeclaredMethod("createGlyph2D", PDFont.class);
     } catch (NoSuchMethodException | SecurityException | IOException e) {
       throw new RuntimeException(e);
