@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.exception.ZeroByteFileException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaMetadataKeys;
 import org.apache.tika.mime.MediaType;
@@ -153,6 +154,8 @@ public class TikaFormatExtractor implements FormatExtractor {
       parser.parse(stream,
           new XHTMLContentHandler(new NoHeadTagInBodyContentHandler(handler), tikaMetadata),
           tikaMetadata, context);
+    } catch (ZeroByteFileException exception){
+      //If a file is zero bytes, then we don't want to throw an exception but continue with an empty HTML string
     } catch (IOException | SAXException | TikaException | NullPointerException exception) {
       throw new ExtractionException("Failed to parse stream", exception);
     }

@@ -14,8 +14,7 @@ public class CsvEmptyTikaFormatExtractorIT extends AbstractTikaFormatExtractorIT
 
   @Test
   public void testBody() {
-    assertBody("" + "<main class=\"SpreadSheet\"> \n" + " <article class=\"Sheet\"> \n"
-        + "  <table></table> \n" + " </article> \n" + "</main>");
+    assertBody("" );
   }
 
 }
