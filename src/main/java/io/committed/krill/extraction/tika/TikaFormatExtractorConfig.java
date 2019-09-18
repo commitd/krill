@@ -1,19 +1,15 @@
 package io.committed.krill.extraction.tika;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.tika.parser.Parser;
-
 import io.committed.krill.extraction.tika.parsers.CsvParser;
 import io.committed.krill.extraction.tika.parsers.JSoupHtmlParser;
 import io.committed.krill.extraction.tika.parsers.RtfParser;
 import io.committed.krill.extraction.tika.pdf.PdfParser;
 import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.tika.parser.Parser;
 
-/**
- * Configuration class for the {@link TikaFormatExtractor}.
- */
+/** Configuration class for the {@link TikaFormatExtractor}. */
 public class TikaFormatExtractorConfig {
 
   /** The parsers to use in the extractor */
@@ -32,18 +28,12 @@ public class TikaFormatExtractorConfig {
     return parsers;
   }
 
-
-  /**
-   * @return create a builder for the {@link TikaFormatExtractor}
-   */
+  /** @return create a builder for the {@link TikaFormatExtractor} */
   public static Builder builder() {
     return new Builder();
   }
 
-  /**
-   * Builder for the {@link TikaFormatExtractor}.
-   *
-   */
+  /** Builder for the {@link TikaFormatExtractor}. */
   public static class Builder {
 
     private boolean csvParser = false;

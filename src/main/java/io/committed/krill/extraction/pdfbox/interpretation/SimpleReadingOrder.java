@@ -2,7 +2,6 @@ package io.committed.krill.extraction.pdfbox.interpretation;
 
 import io.committed.krill.extraction.pdfbox.physical.Line;
 import io.committed.krill.extraction.pdfbox.physical.TextBlock;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -29,8 +28,7 @@ public class SimpleReadingOrder implements ReadingOrder {
   /**
    * Gets the baseline.
    *
-   * @param positioned
-   *          the positioned
+   * @param positioned the positioned
    * @return the baseline
    */
   private double getBaseline(LabellablePositioned positioned) {
@@ -43,5 +41,4 @@ public class SimpleReadingOrder implements ReadingOrder {
     }
     return positioned.getPosition().getMinY();
   }
-
 }

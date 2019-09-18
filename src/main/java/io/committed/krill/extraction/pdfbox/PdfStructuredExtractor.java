@@ -1,18 +1,5 @@
 package io.committed.krill.extraction.pdfbox;
 
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-
 import io.committed.krill.extraction.pdfbox.interpretation.BlockTypeClassifier;
 import io.committed.krill.extraction.pdfbox.interpretation.BlockTypeLabel;
 import io.committed.krill.extraction.pdfbox.interpretation.LabellablePositioned;
@@ -26,10 +13,19 @@ import io.committed.krill.extraction.pdfbox.physical.Text;
 import io.committed.krill.extraction.pdfbox.text.PageSegmenter;
 import io.committed.krill.extraction.pdfbox.text.SimplePageSegmenter;
 import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
-/**
- * Extract structure from PDF files.
- */
+/** Extract structure from PDF files. */
 public class PdfStructuredExtractor {
 
   /** The Constant MAX_UNDERLINE_HEIGHT. */
@@ -47,9 +43,7 @@ public class PdfStructuredExtractor {
   /** The parser config. */
   private final PdfParserConfig parserConfig;
 
-  /**
-   * Instantiates a new pdf structured extractor.
-   */
+  /** Instantiates a new pdf structured extractor. */
   public PdfStructuredExtractor() {
     this(new PdfParserConfig());
   }
@@ -86,24 +80,33 @@ public class PdfStructuredExtractor {
       handler.startElement("article", "class", "page");
       Collection<LabellablePositioned> pageBlocks = blockClassifier.getBlocks(pageIndex);
 
-      Collection<LabellablePositioned> headerBlocks = pageBlocks.stream()
-          .filter(s -> s.getLabels().contains(BlockTypeLabel.HEADER)
-              || s.getPosition().getMaxY() < blockClassifier.getHeaderRegionBottom())
-          .collect(Collectors.toList());
+      Collection<LabellablePositioned> headerBlocks =
+          pageBlocks.stream()
+              .filter(
+                  s ->
+                      s.getLabels().contains(BlockTypeLabel.HEADER)
+                          || s.getPosition().getMaxY() < blockClassifier.getHeaderRegionBottom())
+              .collect(Collectors.toList());
       handler.emitPageHeader(readingOrder.order(headerBlocks));
 
-      Collection<LabellablePositioned> bodyBlocks = pageBlocks.stream()
-          .filter(s -> !s.getLabels().contains(BlockTypeLabel.HEADER)
-              && !s.getLabels().contains(BlockTypeLabel.FOOTER)
-              && s.getPosition().getMaxY() >= blockClassifier.getHeaderRegionBottom()
-              && s.getPosition().getMinY() <= blockClassifier.getFooterRegionTop())
-          .collect(Collectors.toList());
+      Collection<LabellablePositioned> bodyBlocks =
+          pageBlocks.stream()
+              .filter(
+                  s ->
+                      !s.getLabels().contains(BlockTypeLabel.HEADER)
+                          && !s.getLabels().contains(BlockTypeLabel.FOOTER)
+                          && s.getPosition().getMaxY() >= blockClassifier.getHeaderRegionBottom()
+                          && s.getPosition().getMinY() <= blockClassifier.getFooterRegionTop())
+              .collect(Collectors.toList());
       handler.emitBlocks(readingOrder.order(bodyBlocks));
 
-      Collection<LabellablePositioned> footerBlocks = pageBlocks.stream()
-          .filter(s -> s.getLabels().contains(BlockTypeLabel.FOOTER)
-              || s.getPosition().getMinY() > blockClassifier.getFooterRegionTop())
-          .collect(Collectors.toList());
+      Collection<LabellablePositioned> footerBlocks =
+          pageBlocks.stream()
+              .filter(
+                  s ->
+                      s.getLabels().contains(BlockTypeLabel.FOOTER)
+                          || s.getPosition().getMinY() > blockClassifier.getFooterRegionTop())
+              .collect(Collectors.toList());
       handler.emitPageFooter(readingOrder.order(footerBlocks));
 
       handler.endElement("article");
@@ -143,10 +146,9 @@ public class PdfStructuredExtractor {
 
   /**
    * Make lines.
-   * <p>
-   * Lines are encoded as both lines and rectangle commands in PDF files. This extracts very thin
+   *
+   * <p>Lines are encoded as both lines and rectangle commands in PDF files. This extracts very thin
    * rectangles as lines too.
-   * </p>
    *
    * @param rectangles the rectangles
    * @return the collection of extracted lines.
@@ -198,10 +200,8 @@ public class PdfStructuredExtractor {
   /**
    * Checks if is text is underlined by the line.
    *
-   * <p>
-   * PDF has no concept of underlining - it is achieved by drawing lines or rectangles in the right
-   * place.
-   * </p>
+   * <p>PDF has no concept of underlining - it is achieved by drawing lines or rectangles in the
+   * right place.
    *
    * @param text the text
    * @param underline the underline
@@ -211,13 +211,16 @@ public class PdfStructuredExtractor {
     // expand the underline vertically by twice it's height (this should compensate the gap between
     // non-descenders and the underline)
     Rectangle2D.Double rectangle =
-        new Rectangle2D.Double(underline.getMinX(), underline.getMinY() - 2 * underline.getHeight(),
-            underline.getWidth(), underline.getHeight() * 3);
+        new Rectangle2D.Double(
+            underline.getMinX(),
+            underline.getMinY() - 2 * underline.getHeight(),
+            underline.getWidth(),
+            underline.getHeight() * 3);
     Rectangle2D pos = text.getPosition();
 
     // test if the expanded underline intersects the baseline of the text
-    return rectangle.intersectsLine(pos.getMinX(), text.getBaseline(), pos.getMaxX(),
-        text.getBaseline());
+    return rectangle.intersectsLine(
+        pos.getMinX(), text.getBaseline(), pos.getMaxX(), text.getBaseline());
   }
 
   /**
@@ -232,5 +235,4 @@ public class PdfStructuredExtractor {
             r -> r.getHeight() < MAX_UNDERLINE_HEIGHT && r.getWidth() > 5 * MAX_UNDERLINE_HEIGHT)
         .collect(Collectors.toList());
   }
-
 }

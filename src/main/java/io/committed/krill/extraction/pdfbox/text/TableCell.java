@@ -2,12 +2,9 @@ package io.committed.krill.extraction.pdfbox.text;
 
 import io.committed.krill.extraction.pdfbox.physical.Line;
 import io.committed.krill.extraction.pdfbox.physical.TextBlock;
-
 import java.util.List;
 
-/**
- * Represents a cell in a table, ready for emitting.
- */
+/** Represents a cell in a table, ready for emitting. */
 public class TableCell extends TextBlock {
 
   /** The col span. */
@@ -19,8 +16,7 @@ public class TableCell extends TextBlock {
   /**
    * Instantiates a new table cell.
    *
-   * @param content
-   *          the content
+   * @param content the content
    */
   public TableCell(List<Line> content) {
     super(content);
@@ -29,12 +25,9 @@ public class TableCell extends TextBlock {
   /**
    * Instantiates a new table cell.
    *
-   * @param content
-   *          the content
-   * @param colSpan
-   *          the col span
-   * @param rowSpan
-   *          the row span
+   * @param content the content
+   * @param colSpan the col span
+   * @param rowSpan the row span
    */
   public TableCell(List<Line> content, int colSpan, int rowSpan) {
     this(content);
@@ -59,5 +52,4 @@ public class TableCell extends TextBlock {
   public int getRowSpan() {
     return rowSpan;
   }
-
 }

@@ -1,9 +1,8 @@
 package io.committed.krill.extraction.tika.docx;
 
+import io.committed.krill.extraction.tika.helper.AbstractTikaFormatExtractorIT;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import io.committed.krill.extraction.tika.helper.AbstractTikaFormatExtractorIT;
 
 public class DocxHeaderContentFooterTikaFormatExtractorIT extends AbstractTikaFormatExtractorIT {
 
@@ -19,11 +18,16 @@ public class DocxHeaderContentFooterTikaFormatExtractorIT extends AbstractTikaFo
    */
   @Ignore
   public void testBody() {
-    assertBody("" + "<main class=\"Document\"> \n" + " <header> \n"
-        + "  <p>This is the header</p> \n" + " </header> \n" + " <p>This is the content</p> \n"
-        + " <footer> \n" + "  <p>This is the footer</p> \n" + " </footer> \n" + "</main>");
+    assertBody(
+        ""
+            + "<main class=\"Document\"> \n"
+            + " <header> \n"
+            + "  <p>This is the header</p> \n"
+            + " </header> \n"
+            + " <p>This is the content</p> \n"
+            + " <footer> \n"
+            + "  <p>This is the footer</p> \n"
+            + " </footer> \n"
+            + "</main>");
   }
-
-
-
 }

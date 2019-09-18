@@ -1,9 +1,7 @@
 package io.committed.krill.extraction.tika.doc;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import io.committed.krill.extraction.tika.helper.AbstractTikaFormatExtractorIT;
+import org.junit.Test;
 
 public class DocAdhocFormattingTikaFormatExtractorIT extends AbstractTikaFormatExtractorIT {
 
@@ -18,11 +16,12 @@ public class DocAdhocFormattingTikaFormatExtractorIT extends AbstractTikaFormatE
   /*
    * Will fail due to previous reliance on Apache Tika fork. This should pass in the next version of Tika
    */
-  @Ignore
   public void testBody() {
-    assertBody("" + "<main class=\"Document\"> \n" + " <h3>Adhoc application of formatting </h3> \n"
-        + " <p class=\"no_Spacing\">Rather than using styles, text can be altered inline to be <b>bold</b>, <i>italic</i>, <u>underlined</u>, or have <s>strikethrough</s>. It is possible to have subscripts and superscripts, and the colour can be changed. For some reason it is possible to apply <b>text effects</b>.</p> \n"
-        + "</main>");
+    assertBody(
+        ""
+            + "<main class=\"Document\"> \n"
+            + " <h3>Adhoc application of formatting </h3> \n"
+            + " <p class=\"no_Spacing\">Rather than using styles, text can be altered inline to be <b>bold</b>, <i>italic</i>, <u>underlined</u>, or have <s>strikethrough</s>. It is possible to have subscripts and superscripts, and the colour can be changed. For some reason it is possible to apply <b>text effects</b>.</p> \n"
+            + "</main>");
   }
-
 }

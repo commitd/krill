@@ -1,20 +1,17 @@
 package io.committed.krill.extraction.tika.processors;
 
 import io.committed.krill.extraction.tika.processors.helpers.RemovePrefixFromListItemNodeVisitor;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.tika.metadata.Metadata;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Format processor for Word DOC / DOCX files.
  *
- * <p>
- * The output structure is as follows:
- * </p>
+ * <p>The output structure is as follows:
  *
  * <pre>
  * html
@@ -33,19 +30,19 @@ import java.util.regex.Pattern;
  *     - ul (ol)
  *
  * </pre>
- * <p>
- * Note that:
- * </p>
+ *
+ * <p>Note that:
+ *
  * <ul>
- * <li>There is no page information.. Word is not that type of processor
- * <li>The location of footnote varies between DOC and DOCX. In DOC is near where it would be at the
- * bottom of the page. In DOCX is it placed within the element where it is a footnote for</li>
- * <li>This class makes to attempt to extract ordered lists from numbered list items. There is too
- * much ambiguity around numbered headers, numbered paragraphs and numbered list items. Users
- * wishing to get this type of information should implement logical for a particular document
- * template.
- * <li>Only certain style information is provided by tika, limited to bold, italics and strike
- * through (DOC only).
+ *   <li>There is no page information.. Word is not that type of processor
+ *   <li>The location of footnote varies between DOC and DOCX. In DOC is near where it would be at
+ *       the bottom of the page. In DOCX is it placed within the element where it is a footnote for
+ *   <li>This class makes to attempt to extract ordered lists from numbered list items. There is too
+ *       much ambiguity around numbered headers, numbered paragraphs and numbered list items. Users
+ *       wishing to get this type of information should implement logical for a particular document
+ *       template.
+ *   <li>Only certain style information is provided by tika, limited to bold, italics and strike
+ *       through (DOC only).
  * </ul>
  */
 public class WordFormatProcessor extends AbstractJsoupFormatProcessor {
@@ -58,15 +55,15 @@ public class WordFormatProcessor extends AbstractJsoupFormatProcessor {
   /** Marker for the originating location of a footnote in DOCX. */
   private static final String DOCX_FOOTNOTE_REFERENCE_REGEX = "\\[footnoteRef:\\d+\\]";
 
-  private static final Pattern DOCX_FOOTNOTE_REFERENCE_REGEX_PATTERN = Pattern
-      .compile(DOCX_FOOTNOTE_REFERENCE_REGEX);
+  private static final Pattern DOCX_FOOTNOTE_REFERENCE_REGEX_PATTERN =
+      Pattern.compile(DOCX_FOOTNOTE_REFERENCE_REGEX);
 
   /** DOCX structure for the content of a footnote. */
-  private static final String DOCX_FOOTNOTE_CONTENT_REGEX = "\\s*\\[\\d+:\\s*" + "(?<content>.*?)"
-      + "\\]\\s*";
+  private static final String DOCX_FOOTNOTE_CONTENT_REGEX =
+      "\\s*\\[\\d+:\\s*" + "(?<content>.*?)" + "\\]\\s*";
 
-  private static final Pattern DOCX_FOOTNOTE_CONTENT_REGEX_PATTERN = Pattern
-      .compile(DOCX_FOOTNOTE_CONTENT_REGEX);
+  private static final Pattern DOCX_FOOTNOTE_CONTENT_REGEX_PATTERN =
+      Pattern.compile(DOCX_FOOTNOTE_CONTENT_REGEX);
 
   /** The DOT which is used to indicate a bullet point (list item) in DOC. */
   private static final String DOT = "·";
@@ -112,19 +109,16 @@ public class WordFormatProcessor extends AbstractJsoupFormatProcessor {
   /**
    * Removes the CSS class from headings.
    *
-   * @param document
-   *          the document
+   * @param document the document
    */
   private void removeClassFromHeadings(final Document document) {
     document.select("h1,h2,h3,h4,h5,h6").removeAttr(CLASS);
-
   }
 
   /**
    * Change the section and page breaks from p to hrs.
    *
-   * @param document
-   *          the document
+   * @param document the document
    */
   private void changeBreaks(final Document document) {
     document.select("p.pagebreak,p.sectionbreak").tagName("hr");
@@ -133,8 +127,7 @@ public class WordFormatProcessor extends AbstractJsoupFormatProcessor {
   /**
    * Convert quotes to HTML5 quote types.
    *
-   * @param document
-   *          the document
+   * @param document the document
    */
   private void convertQuotes(final Document document) {
     document.select("p.quote,p.intense_Quote").tagName("blockquote").removeAttr(CLASS);
@@ -147,8 +140,7 @@ public class WordFormatProcessor extends AbstractJsoupFormatProcessor {
   /**
    * Convert captions to HTML5 caption types.
    *
-   * @param document
-   *          the document
+   * @param document the document
    */
   private void convertCaptions(final Document document) {
     document.select("p.caption").tagName("figcaption").removeAttr(CLASS);
@@ -160,8 +152,7 @@ public class WordFormatProcessor extends AbstractJsoupFormatProcessor {
   /**
    * Convert header and footers to HTML header and footers.
    *
-   * @param document
-   *          the document
+   * @param document the document
    */
   private void convertHeaderAndFooters(final Document document) {
     // Correct div tags to header type
@@ -182,8 +173,7 @@ public class WordFormatProcessor extends AbstractJsoupFormatProcessor {
   /**
    * Convert paragraphs which are lists into HTML list and list item types.
    *
-   * @param document
-   *          the document
+   * @param document the document
    */
   private void convertLists(final Document document) {
 
@@ -191,29 +181,35 @@ public class WordFormatProcessor extends AbstractJsoupFormatProcessor {
     document.select("p.list_paragraph,p.list_Paragraph").tagName("li").removeAttr(CLASS);
 
     // Convert p tags which start with a dot into listitems
-    document.select("p").forEach(e -> {
-      if (e.text().startsWith(DOT)) {
-        e.tagName("li");
-      }
-    });
+    document
+        .select("p")
+        .forEach(
+            e -> {
+              if (e.text().startsWith(DOT)) {
+                e.tagName("li");
+              }
+            });
 
     // Under an ul or ol should be a li
     document.select("ul,ol > p").forEach(l -> l.select("p").wrap("<li></li>"));
 
     // If not parent of li if not ul or ol then wrap with ul?
-    wrapRunsOfChildTag(document, "li",
-        p -> "ul".equalsIgnoreCase(p.tagName()) || "ol".equalsIgnoreCase(p.tagName()), "ul");
+    wrapRunsOfChildTag(
+        document,
+        "li",
+        p -> "ul".equalsIgnoreCase(p.tagName()) || "ol".equalsIgnoreCase(p.tagName()),
+        "ul");
 
     // Remove the prefix on the list items
-    document.select("li")
+    document
+        .select("li")
         .forEach(element -> element.traverse(new RemovePrefixFromListItemNodeVisitor(DOT)));
   }
 
   /**
    * Convert footnotes into HTML asides.
    *
-   * @param document
-   *          the document
+   * @param document the document
    */
   private void convertFootnotes(final Document document) {
     // Footnotes:
@@ -222,37 +218,48 @@ public class WordFormatProcessor extends AbstractJsoupFormatProcessor {
     // reference).
 
     // So for DOC:
-    document.select("p:containsOwn(" + DOC_FOOTNOTE_MARKER + ")").forEach(p -> {
-      p.tagName("details").attr(CLASS, "footnode");
-      final String newText = p.text().replace(DOC_FOOTNOTE_MARKER, "");
-      p.text(newText);
-    });
+    document
+        .select("p:containsOwn(" + DOC_FOOTNOTE_MARKER + ")")
+        .forEach(
+            p -> {
+              p.tagName("details").attr(CLASS, "footnode");
+              final String newText = p.text().replace(DOC_FOOTNOTE_MARKER, "");
+              p.text(newText);
+            });
 
     // For DOCX, first remove the footnote reference
-    document.select("*:matchesOwn(" + DOCX_FOOTNOTE_REFERENCE_REGEX + ")").forEach(p -> {
-      final String newText = DOCX_FOOTNOTE_REFERENCE_REGEX_PATTERN.matcher(p.ownText())
-          .replaceAll("");
-      p.text(newText);
-    });
+    document
+        .select("*:matchesOwn(" + DOCX_FOOTNOTE_REFERENCE_REGEX + ")")
+        .forEach(
+            p -> {
+              final String newText =
+                  DOCX_FOOTNOTE_REFERENCE_REGEX_PATTERN.matcher(p.ownText()).replaceAll("");
+              p.text(newText);
+            });
     // Then for DOCX mark the footnote text as a footnote
-    document.select("*:matchesOwn(" + DOCX_FOOTNOTE_CONTENT_REGEX + ")").forEach(p -> {
+    document
+        .select("*:matchesOwn(" + DOCX_FOOTNOTE_CONTENT_REGEX + ")")
+        .forEach(
+            p -> {
 
-      // We delete the footnote text...
-      final String oldText = p.ownText();
-      final String newText = DOCX_FOOTNOTE_CONTENT_REGEX_PATTERN.matcher(p.ownText())
-          .replaceAll("");
-      p.text(newText);
+              // We delete the footnote text...
+              final String oldText = p.ownText();
+              final String newText =
+                  DOCX_FOOTNOTE_CONTENT_REGEX_PATTERN.matcher(p.ownText()).replaceAll("");
+              p.text(newText);
 
-      // We create new elements for each footnote in this element.
-      // Currently we are creating them as children here, but that's different to DOC (which
-      // puts them randomly somewhere)
-      final Matcher matcher = DOCX_FOOTNOTE_CONTENT_REGEX_PATTERN.matcher(oldText);
-      while (matcher.find()) {
-        final Element e = document.createElement("details").addClass("footnote")
-            .text(matcher.group("content"));
-        p.appendChild(e);
-      }
-    });
+              // We create new elements for each footnote in this element.
+              // Currently we are creating them as children here, but that's different to DOC (which
+              // puts them randomly somewhere)
+              final Matcher matcher = DOCX_FOOTNOTE_CONTENT_REGEX_PATTERN.matcher(oldText);
+              while (matcher.find()) {
+                final Element e =
+                    document
+                        .createElement("details")
+                        .addClass("footnote")
+                        .text(matcher.group("content"));
+                p.appendChild(e);
+              }
+            });
   }
-
 }

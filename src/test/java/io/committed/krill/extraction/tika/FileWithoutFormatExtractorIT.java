@@ -2,10 +2,9 @@ package io.committed.krill.extraction.tika;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-
 import io.committed.krill.extraction.impl.DefaultExtraction;
 import io.committed.krill.extraction.tika.helper.AbstractTikaFormatExtractorIT;
+import org.junit.Test;
 
 public class FileWithoutFormatExtractorIT extends AbstractTikaFormatExtractorIT {
 
@@ -23,5 +22,4 @@ public class FileWithoutFormatExtractorIT extends AbstractTikaFormatExtractorIT 
   public void testHasMetadata() {
     assertThat(((DefaultExtraction) extraction).getMetadata().isEmpty()).isFalse();
   }
-
 }

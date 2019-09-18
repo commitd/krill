@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
+import io.committed.krill.extraction.pdfbox.physical.Text;
+import io.committed.krill.extraction.pdfbox.text.CharacterExtractor;
+import java.awt.geom.AffineTransform;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -16,11 +19,6 @@ import org.apache.pdfbox.util.Matrix;
 import org.apache.pdfbox.util.Vector;
 import org.junit.Before;
 import org.junit.Test;
-
-import io.committed.krill.extraction.pdfbox.physical.Text;
-import io.committed.krill.extraction.pdfbox.text.CharacterExtractor;
-
-import java.awt.geom.AffineTransform;
 
 public class CharacterExtractorStyleTest {
 
@@ -41,7 +39,6 @@ public class CharacterExtractorStyleTest {
     this.displacement = new Vector(0, 0);
     this.graphicsState = new PDGraphicsState(new PDRectangle(100, 100));
     this.page = new PDPage(new PDRectangle(72 * 8.27f, 72 * 11.69f));
-
   }
 
   @Test
@@ -103,8 +100,8 @@ public class CharacterExtractorStyleTest {
   }
 
   private Text getStyleForFont(PDFont font) {
-    return characterExtractor.calculateStyleAndPosition(page, matrix, matrix, font, 'A', "A",
-        displacement, graphicsState, false);
+    return characterExtractor.calculateStyleAndPosition(
+        page, matrix, matrix, font, 'A', "A", displacement, graphicsState, false);
   }
 
   @Test
@@ -133,24 +130,51 @@ public class CharacterExtractorStyleTest {
   public void testWideLineStrokeIsBold() {
     graphicsState.setLineWidth(2f);
     graphicsState.getTextState().setRenderingMode(RenderingMode.FILL_STROKE);
-    Text positionedStyledText = characterExtractor.calculateStyleAndPosition(page, matrix, matrix,
-        PDType1Font.COURIER, 'A', "A", displacement, graphicsState, false);
+    Text positionedStyledText =
+        characterExtractor.calculateStyleAndPosition(
+            page,
+            matrix,
+            matrix,
+            PDType1Font.COURIER,
+            'A',
+            "A",
+            displacement,
+            graphicsState,
+            false);
     assertThat(positionedStyledText.getStyle().isBold()).isTrue();
   }
 
   @Test
   public void testWideLineNoStrokeIsNotBold() {
     graphicsState.setLineWidth(2f);
-    Text positionedStyledText = characterExtractor.calculateStyleAndPosition(page, matrix, matrix,
-        PDType1Font.COURIER, 'A', "A", displacement, graphicsState, false);
+    Text positionedStyledText =
+        characterExtractor.calculateStyleAndPosition(
+            page,
+            matrix,
+            matrix,
+            PDType1Font.COURIER,
+            'A',
+            "A",
+            displacement,
+            graphicsState,
+            false);
     assertThat(positionedStyledText.getStyle().isBold()).isFalse();
   }
 
   @Test
   public void testThinLineStrokeIsNotBold() {
     graphicsState.getTextState().setRenderingMode(RenderingMode.FILL_STROKE);
-    Text positionedStyledText = characterExtractor.calculateStyleAndPosition(page, matrix, matrix,
-        PDType1Font.COURIER, 'A', "A", displacement, graphicsState, false);
+    Text positionedStyledText =
+        characterExtractor.calculateStyleAndPosition(
+            page,
+            matrix,
+            matrix,
+            PDType1Font.COURIER,
+            'A',
+            "A",
+            displacement,
+            graphicsState,
+            false);
     assertThat(positionedStyledText.getStyle().isBold()).isFalse();
   }
 
@@ -187,13 +211,31 @@ public class CharacterExtractorStyleTest {
   @Test
   public void testSizeNoScale() {
     graphicsState.getTextState().setFontSize(0f);
-    Text positionedStyledText = characterExtractor.calculateStyleAndPosition(page, matrix, matrix,
-        PDType1Font.COURIER, 'A', "A", displacement, graphicsState, false);
+    Text positionedStyledText =
+        characterExtractor.calculateStyleAndPosition(
+            page,
+            matrix,
+            matrix,
+            PDType1Font.COURIER,
+            'A',
+            "A",
+            displacement,
+            graphicsState,
+            false);
     assertThat(positionedStyledText.getStyle().getSize()).isEqualTo(0f);
 
     graphicsState.getTextState().setFontSize(14f);
-    positionedStyledText = characterExtractor.calculateStyleAndPosition(page, matrix, matrix,
-        PDType1Font.COURIER, 'A', "A", displacement, graphicsState, false);
+    positionedStyledText =
+        characterExtractor.calculateStyleAndPosition(
+            page,
+            matrix,
+            matrix,
+            PDType1Font.COURIER,
+            'A',
+            "A",
+            displacement,
+            graphicsState,
+            false);
     assertThat(positionedStyledText.getStyle().getSize()).isEqualTo(14f);
   }
 
@@ -201,14 +243,31 @@ public class CharacterExtractorStyleTest {
   public void testSizeScale() {
     Matrix scaleMatrix = new Matrix(AffineTransform.getScaleInstance(14, 14));
     graphicsState.getTextState().setFontSize(0f);
-    Text positionedStyledText = characterExtractor.calculateStyleAndPosition(page, matrix,
-        scaleMatrix, PDType1Font.COURIER, 'A', "A", displacement, graphicsState, false);
+    Text positionedStyledText =
+        characterExtractor.calculateStyleAndPosition(
+            page,
+            matrix,
+            scaleMatrix,
+            PDType1Font.COURIER,
+            'A',
+            "A",
+            displacement,
+            graphicsState,
+            false);
     assertThat(positionedStyledText.getStyle().getSize()).isEqualTo(0f);
 
     graphicsState.getTextState().setFontSize(1.0f);
-    positionedStyledText = characterExtractor.calculateStyleAndPosition(page, matrix, scaleMatrix,
-        PDType1Font.COURIER, 'A', "A", displacement, graphicsState, false);
+    positionedStyledText =
+        characterExtractor.calculateStyleAndPosition(
+            page,
+            matrix,
+            scaleMatrix,
+            PDType1Font.COURIER,
+            'A',
+            "A",
+            displacement,
+            graphicsState,
+            false);
     assertThat(positionedStyledText.getStyle().getSize()).isEqualTo(14f);
   }
-
 }

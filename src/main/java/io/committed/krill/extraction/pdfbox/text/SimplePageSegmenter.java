@@ -1,21 +1,18 @@
 package io.committed.krill.extraction.pdfbox.text;
 
-import java.awt.geom.Line2D;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
 import io.committed.krill.extraction.pdfbox.interpretation.LabellablePositioned;
 import io.committed.krill.extraction.pdfbox.physical.Line;
 import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
 import io.committed.krill.extraction.pdfbox.physical.Text;
 import io.committed.krill.extraction.pdfbox.physical.TextBlock;
 import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
+import java.awt.geom.Line2D;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
-/**
- * Default implementation of PageSegmenter.
- */
+/** Default implementation of PageSegmenter. */
 public class SimplePageSegmenter implements PageSegmenter {
 
   /** The line finder. */
@@ -33,9 +30,7 @@ public class SimplePageSegmenter implements PageSegmenter {
   /** The Constant FIND_TABLES. */
   private static final boolean FIND_TABLES = true;
 
-  /**
-   * Create a new {@link SimplePageSegmenter}.
-   */
+  /** Create a new {@link SimplePageSegmenter}. */
   public SimplePageSegmenter(PdfParserConfig parserConfig) {
     lineFinder = new BaselineLineFinder(parserConfig);
     wordSegmenter = new WhitespaceWordSegmenter();
@@ -44,8 +39,8 @@ public class SimplePageSegmenter implements PageSegmenter {
   }
 
   @Override
-  public Collection<LabellablePositioned> segment(List<PositionedContainer<Text>> sequences,
-      Collection<Line2D> lines) {
+  public Collection<LabellablePositioned> segment(
+      List<PositionedContainer<Text>> sequences, Collection<Line2D> lines) {
     List<PositionedContainer<Text>> lineCandidates = lineFinder.findLines(sequences);
     ArrayList<Line> textLines = gatherLines(lineCandidates);
 
@@ -77,5 +72,4 @@ public class SimplePageSegmenter implements PageSegmenter {
     }
     return lines;
   }
-
 }

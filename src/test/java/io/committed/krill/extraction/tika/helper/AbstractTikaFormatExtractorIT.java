@@ -4,19 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import io.committed.krill.extraction.Extraction;
+import io.committed.krill.extraction.exception.ExtractionException;
+import io.committed.krill.extraction.impl.DefaultExtraction;
+import io.committed.krill.extraction.tika.TikaFormatExtractor;
+import java.io.IOException;
+import java.io.InputStream;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 import org.junit.Before;
 import org.junit.Test;
-
-import io.committed.krill.extraction.Extraction;
-import io.committed.krill.extraction.exception.ExtractionException;
-import io.committed.krill.extraction.impl.DefaultExtraction;
-import io.committed.krill.extraction.tika.TikaFormatExtractor;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 public abstract class AbstractTikaFormatExtractorIT {
 
@@ -34,8 +32,6 @@ public abstract class AbstractTikaFormatExtractorIT {
     this.resourceName = resourceName;
     this.generateTestCode = generateTestCode;
   }
-
-
 
   @Before
   public void setup() throws IOException, ExtractionException {
@@ -58,7 +54,6 @@ public abstract class AbstractTikaFormatExtractorIT {
     assertNotNull(((DefaultExtraction) extraction).getMetadata());
     assertFalse(extraction.getHtml().isEmpty());
     assertNotNull(document);
-
   }
 
   protected void assertBody(final String expectedHtml) {

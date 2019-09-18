@@ -3,6 +3,9 @@ package io.committed.krill.extraction.pdfbox;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+import io.committed.krill.extraction.pdfbox.physical.Text;
+import io.committed.krill.extraction.pdfbox.text.CharacterExtractor;
+import java.io.IOException;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -12,11 +15,6 @@ import org.apache.pdfbox.util.Matrix;
 import org.apache.pdfbox.util.Vector;
 import org.junit.Before;
 import org.junit.Test;
-
-import io.committed.krill.extraction.pdfbox.physical.Text;
-import io.committed.krill.extraction.pdfbox.text.CharacterExtractor;
-
-import java.io.IOException;
 
 public class CharacterExtractorBaselineTest {
 
@@ -88,13 +86,21 @@ public class CharacterExtractorBaselineTest {
 
   private void checkBaseline(int codepoint, Matrix matrix, float expectedBaseline) {
     try {
-      Text positionedStyledText = characterExtractor.calculateStyleAndPosition(page, matrix, matrix,
-          FONT, codepoint, FONT.toUnicode(codepoint), displacement, graphicsState, false);
+      Text positionedStyledText =
+          characterExtractor.calculateStyleAndPosition(
+              page,
+              matrix,
+              matrix,
+              FONT,
+              codepoint,
+              FONT.toUnicode(codepoint),
+              displacement,
+              graphicsState,
+              false);
       assertThat(positionedStyledText).isNotNull();
       assertThat(positionedStyledText.getBaseline()).isEqualTo(expectedBaseline);
     } catch (IOException e) {
       fail("Failed to get character for codepoint " + codepoint, e);
     }
   }
-
 }

@@ -5,7 +5,7 @@
 
 	<groupId>io.committed.krill</groupId>
 	<artifactId>krill</artifactId>
-	<version>1.0.4</version>
+	<version>1.1.0</version>
 	<name>krill</name>
 	<description>Uses Apache Tika (https://tika.apache.org/) and PDFBox (https://pdfbox.apache.org/) with subsequent post processing to generate a HTML representation of a document (PDF, CSV, XLS, etc) together with it metadata.</description>
 	<url>http://github.com/commitd/krill</url>
@@ -47,7 +47,7 @@
 		<commons-io.version>2.6</commons-io.version>
 		<commons-csv.version>1.5</commons-csv.version>
 		<slf4j.version>1.7.25</slf4j.version>
-		<tika.version>1.18</tika.version>
+		<tika.version>1.22</tika.version>
 		<jbig2-imageio.version>3.0.1</jbig2-imageio.version>
 		<guava.version>25.1-jre</guava.version>
 		<jsoup.version>1.11.3</jsoup.version>
@@ -58,13 +58,13 @@
 		<junit.expected-failure.version>0.0.9</junit.expected-failure.version>
 		<mockito.version>2.19.0</mockito.version>
 
-		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+		<maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
 		<maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
 		<maven.findbugs.plugin.version>3.0.1</maven.findbugs.plugin.version>
-		<maven.jacoco.plugin.version>0.7.8</maven.jacoco.plugin.version>
+		<maven.jacoco.plugin.version>0.8.2</maven.jacoco.plugin.version>
 		<maven.license.plugin.version>1.8</maven.license.plugin.version>
-		<maven.surefire.plugin.version>2.18.1</maven.surefire.plugin.version>
-		<maven.failsafe.plugin.version>2.18.1</maven.failsafe.plugin.version>
+		<maven.surefire.plugin.version>3.0.0-M3</maven.surefire.plugin.version>
+		<maven.failsafe.plugin.version>3.0.0-M3</maven.failsafe.plugin.version>
 		<maven.jxr.plugin.version>2.3</maven.jxr.plugin.version>
 		<maven.pmd.plugin.version>3.6</maven.pmd.plugin.version>
 		<maven.project.info.reports.plugin.version>2.8</maven.project.info.reports.plugin.version>
@@ -180,29 +180,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>${maven.findbugs.plugin.version}</version>
-				<configuration>
-					<excludeFilterFile>${basedir}/src/site/findbugs_exclude.xml</excludeFilterFile>
-					<failOnError>true</failOnError>
-					<effort>Max</effort>
-					<threshold>Low</threshold>
-					<findbugsXmlOutput>true</findbugsXmlOutput>
-					<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-					<xmlOutput>true</xmlOutput>
-				</configuration>
-				<executions>
-					<execution>
-						<id>analyze-compile</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven.surefire.plugin.version}</version>
@@ -272,7 +249,28 @@
 				<version>4.3.0</version>
 			</plugin>
 
-		</plugins>
+				<plugin>
+					<groupId>io.committed</groupId>
+					<artifactId>speedy-spotless-maven-plugin</artifactId>
+					<version>0.0.2</version>
+					<executions>
+						<execution>
+							<id>install-formatter-hook</id>
+							<goals>
+								<goal>install-hooks</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<java>
+							<googleJavaFormat>
+								<style>GOOGLE</style>
+							</googleJavaFormat>
+							<removeUnusedImports />
+						</java>
+					</configuration>
+				</plugin>
+			</plugins>
 
 		<pluginManagement>
 			<plugins>

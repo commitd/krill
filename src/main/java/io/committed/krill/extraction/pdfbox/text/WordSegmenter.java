@@ -4,7 +4,6 @@ import io.committed.krill.extraction.pdfbox.physical.Line;
 import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
 import io.committed.krill.extraction.pdfbox.physical.Text;
 import io.committed.krill.extraction.pdfbox.physical.Word;
-
 import java.util.Optional;
 
 /**
@@ -17,10 +16,8 @@ public interface WordSegmenter {
   /**
    * Segment the given {@link Text}s into {@link Line}s.
    *
-   * @param baselinedText
-   *          the {@link Text} with a common baseline.
+   * @param baselinedText the {@link Text} with a common baseline.
    * @return an {@link Optional} {@link Line} extracted from the given {@link Text}s.
    */
   Optional<Line> segmentWords(PositionedContainer<Text> baselinedText);
-
 }

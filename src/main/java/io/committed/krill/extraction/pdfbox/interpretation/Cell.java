@@ -3,9 +3,7 @@ package io.committed.krill.extraction.pdfbox.interpretation;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-/**
- * A class representing a table cell.
- */
+/** A class representing a table cell. */
 public class Cell {
 
   /** The bounds. */
@@ -20,20 +18,20 @@ public class Cell {
   /**
    * Instantiates a new cell.
    *
-   * @param topLeft
-   *          the top left
-   * @param bottomRight
-   *          the bottom right
-   * @param colSpan
-   *          the col span
-   * @param rowSpan
-   *          the row span
+   * @param topLeft the top left
+   * @param bottomRight the bottom right
+   * @param colSpan the col span
+   * @param rowSpan the row span
    */
   public Cell(Point2D topLeft, Point2D bottomRight, int colSpan, int rowSpan) {
     this.colSpan = colSpan;
     this.rowSpan = rowSpan;
-    this.bounds = new Rectangle2D.Double(topLeft.getX(), topLeft.getY(),
-        bottomRight.getX() - topLeft.getX(), bottomRight.getY() - topLeft.getY());
+    this.bounds =
+        new Rectangle2D.Double(
+            topLeft.getX(),
+            topLeft.getY(),
+            bottomRight.getX() - topLeft.getX(),
+            bottomRight.getY() - topLeft.getY());
   }
 
   /**
@@ -62,5 +60,4 @@ public class Cell {
   public int getRowSpan() {
     return rowSpan;
   }
-
 }

@@ -3,9 +3,7 @@ package io.committed.krill.extraction.pdfbox.interpretation;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * A class representing a grid (table).
- */
+/** A class representing a grid (table). */
 public class Grid {
 
   /** The rows. */
@@ -23,8 +21,7 @@ public class Grid {
   /**
    * Adds a row.
    *
-   * @param row
-   *          the row
+   * @param row the row
    */
   void addRow(Row row) {
     rows.add(row);

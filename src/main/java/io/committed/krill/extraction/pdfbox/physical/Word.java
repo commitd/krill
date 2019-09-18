@@ -1,15 +1,12 @@
 package io.committed.krill.extraction.pdfbox.physical;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Represents a word in a {@link Line} of text.
- */
+/** Represents a word in a {@link Line} of text. */
 public class Word extends PositionedStyledContainer<Text> implements Baselined {
 
   /** The Constant LOGGER. */
@@ -21,8 +18,7 @@ public class Word extends PositionedStyledContainer<Text> implements Baselined {
   /**
    * Create a new {@link Word} from the given ordered list of {@link Text} content.
    *
-   * @param content
-   *          the {@link Text} content for the word.
+   * @param content the {@link Text} content for the word.
    */
   public Word(List<Text> content) {
     super(content);
@@ -59,5 +55,4 @@ public class Word extends PositionedStyledContainer<Text> implements Baselined {
   public String toString() {
     return getContents().stream().map(Text::toString).collect(Collectors.joining());
   }
-
 }

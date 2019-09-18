@@ -1,12 +1,11 @@
 package io.committed.krill.extraction.pdfbox.text;
 
+import io.committed.krill.extraction.pdfbox.physical.Positioned;
+import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
-
-import io.committed.krill.extraction.pdfbox.physical.Positioned;
-import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
 
 /**
  * Implementation of the recursive x-y cut algorithm.
@@ -100,7 +99,10 @@ public class RecursiveXyCut<T extends Positioned> {
    * @param longest the longest
    * @param extractor the extractor
    */
-  private void split(TreeNode<PositionedContainer<T>> node, boolean[] projection, Run longest,
+  private void split(
+      TreeNode<PositionedContainer<T>> node,
+      boolean[] projection,
+      Run longest,
       Function<Positioned, Double> extractor) {
     int splitPoint = (int) ((longest.index + longest.length / 2f) / projectionScale);
 
@@ -208,9 +210,9 @@ public class RecursiveXyCut<T extends Positioned> {
     }
     boolean[] projection = new boolean[width];
     for (Positioned p : data.getContents()) {
-      for (int j =
-          (int) (p.getPosition().getMinX() * projectionScale); j < (int) (p.getPosition().getMaxX()
-              * projectionScale); j++) {
+      for (int j = (int) (p.getPosition().getMinX() * projectionScale);
+          j < (int) (p.getPosition().getMaxX() * projectionScale);
+          j++) {
         projection[j < 0 ? 0 : j] = true;
       }
     }
@@ -230,9 +232,9 @@ public class RecursiveXyCut<T extends Positioned> {
     }
     boolean[] projection = new boolean[height];
     for (Positioned p : data.getContents()) {
-      for (int j =
-          (int) (p.getPosition().getMinY() * projectionScale); j < (int) (p.getPosition().getMaxY()
-              * projectionScale); j++) {
+      for (int j = (int) (p.getPosition().getMinY() * projectionScale);
+          j < (int) (p.getPosition().getMaxY() * projectionScale);
+          j++) {
         projection[j < 0 ? 0 : j] = true;
       }
     }
@@ -292,12 +294,9 @@ public class RecursiveXyCut<T extends Positioned> {
     public String toString() {
       return "TreeNode [data=" + data + ", children=" + children + "]";
     }
-
   }
 
-  /**
-   * The Class Run.
-   */
+  /** The Class Run. */
   private static class Run {
 
     /** The index. */
@@ -310,7 +309,5 @@ public class RecursiveXyCut<T extends Positioned> {
     public String toString() {
       return "Run [index=" + index + ", length=" + length + "]";
     }
-
   }
-
 }

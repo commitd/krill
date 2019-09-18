@@ -3,14 +3,11 @@ package io.committed.krill.extraction.pdfbox.text;
 import io.committed.krill.extraction.pdfbox.interpretation.BlockTypeLabel;
 import io.committed.krill.extraction.pdfbox.interpretation.LabellablePositioned;
 import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
-
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Represents a table found in a PDF.
- */
+/** Represents a table found in a PDF. */
 public class TableBlock extends PositionedContainer<TableRow> implements LabellablePositioned {
 
   /** The labels. */
@@ -19,8 +16,7 @@ public class TableBlock extends PositionedContainer<TableRow> implements Labella
   /**
    * Creates a new {@link TableBlock} from the given {@link TableRow}s.
    *
-   * @param rows
-   *          the rows of the table.
+   * @param rows the rows of the table.
    */
   public TableBlock(List<TableRow> rows) {
     super(rows);
@@ -38,5 +34,4 @@ public class TableBlock extends PositionedContainer<TableRow> implements Labella
       labels.remove(BlockTypeLabel.UNKNOWN);
     }
   }
-
 }

@@ -2,14 +2,11 @@ package io.committed.krill.extraction.pdfbox.physical;
 
 import io.committed.krill.extraction.pdfbox.interpretation.BlockTypeLabel;
 import io.committed.krill.extraction.pdfbox.interpretation.LabellablePositioned;
-
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Represents a block of text in a page.
- */
+/** Represents a block of text in a page. */
 public class TextBlock extends PositionedStyledContainer<Line> implements LabellablePositioned {
 
   /** The labels. */
@@ -18,8 +15,7 @@ public class TextBlock extends PositionedStyledContainer<Line> implements Labell
   /**
    * Create a new {@link TextBlock} with the given {@link Line}s of content.
    *
-   * @param content
-   *          the content.
+   * @param content the content.
    */
   public TextBlock(List<Line> content) {
     super(content);
@@ -37,5 +33,4 @@ public class TextBlock extends PositionedStyledContainer<Line> implements Labell
       labels.remove(BlockTypeLabel.UNKNOWN);
     }
   }
-
 }

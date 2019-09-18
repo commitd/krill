@@ -1,8 +1,7 @@
 package io.committed.krill.extraction.tika.ppt;
 
-import org.junit.Test;
-
 import io.committed.krill.extraction.tika.helper.AbstractTikaFormatExtractorIT;
+import org.junit.Test;
 
 public class PptPlainSimpleTitleSlideTikaFormatExtractorIT extends AbstractTikaFormatExtractorIT {
 
@@ -14,10 +13,18 @@ public class PptPlainSimpleTitleSlideTikaFormatExtractorIT extends AbstractTikaF
 
   @Test
   public void testBody() {
-    assertBody("" + "<main class=\"SlideShow\"> \n" + " <article class=\"Slide\"> \n"
-        + "  <section> \n" + "   <p>Title</p> \n" + "   <p>Subtitle</p> \n" + "  </section> \n"
-        + "  <aside> \n" + "   <p>Notes</p> \n" + "  </aside> \n" + " </article> \n" + " <aside> \n"
-        + "  <p>Notes</p> \n" + " </aside> \n" + "</main>");
+    assertBody(
+        ""
+            + "<main class=\"SlideShow\"> \n"
+            + " <article class=\"Slide\"> \n"
+            + "  <section> \n"
+            + "   <p>Title</p> \n"
+            + "   <p>Subtitle</p> \n"
+            + "  </section> \n"
+            + "  <aside> \n"
+            + "   <p>Notes</p> \n"
+            + "  </aside> \n"
+            + " </article> \n"
+            + "</main>");
   }
-
 }

@@ -1,30 +1,27 @@
 package io.committed.krill.extraction.tika;
 
 import com.google.common.collect.Sets;
-
+import java.util.Set;
 import org.apache.tika.sax.ContentHandlerDecorator;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-import java.util.Set;
-
 /**
  * Removes tags which should not appear in the body (ie not be converted to text).
- * <p>
- * The combination of XHTMLContentHandler and ToHTMLContentHandler produces metadata in both the
+ *
+ * <p>The combination of XHTMLContentHandler and ToHTMLContentHandler produces metadata in both the
  * body and the head, so this strips that out of the body. Also it will prevent style and script
  * tags from appearing in the body.
- * </p>
- * <p>
- * We also seen an issue in Tika where (via the XHTMLContentHandler) additional html/body elements
- * are put in the body. This is because XHTMLContentHandler specifically adds a html header.
- * </p>
+ *
+ * <p>We also seen an issue in Tika where (via the XHTMLContentHandler) additional html/body
+ * elements are put in the body. This is because XHTMLContentHandler specifically adds a html
+ * header.
  */
 public class NoHeadTagInBodyContentHandler extends ContentHandlerDecorator {
 
-  private static final Set<String> HEADER_TAGS = Sets.newHashSet("title", "meta", "script", "style",
-      "link");
+  private static final Set<String> HEADER_TAGS =
+      Sets.newHashSet("title", "meta", "script", "style", "link");
 
   private boolean inHead = false;
   private boolean ignoreCharacters = false;
@@ -36,16 +33,16 @@ public class NoHeadTagInBodyContentHandler extends ContentHandlerDecorator {
   /**
    * Instantiates a new content handler.
    *
-   * @param handler
-   *          the underlying handler to delegate to (typically a HTMLContentHandler)
+   * @param handler the underlying handler to delegate to (typically a HTMLContentHandler)
    */
   public NoHeadTagInBodyContentHandler(final ContentHandler handler) {
     super(handler);
   }
 
   @Override
-  public void startElement(final String uri, final String localName, final String qname,
-      final Attributes atts) throws SAXException {
+  public void startElement(
+      final String uri, final String localName, final String qname, final Attributes atts)
+      throws SAXException {
 
     if ("html".equals(localName)) {
       if (!seenHtml) {
@@ -102,5 +99,4 @@ public class NoHeadTagInBodyContentHandler extends ContentHandlerDecorator {
       ignoreCharacters = false;
     }
   }
-
 }

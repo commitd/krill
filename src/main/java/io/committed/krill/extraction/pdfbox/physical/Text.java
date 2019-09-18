@@ -30,20 +30,15 @@ public class Text implements Positioned, Styled, Baselined {
    * Creates a new text element (a single code point, which may be encoded as a surrogate pair so
    * stored as a String).
    *
-   * @param content
-   *          the String representation of the code point, if available.
-   * @param position
-   *          the bounding box of this item in the page.
-   * @param baseLine
-   *          the computed baseline of the text (may be different from the bottom of the bounding
-   *          box - consider descenders)
-   * @param style
-   *          the style computed for the text based on current rendering state.
-   * @param startText
-   *          whether this text is the first in a sequence or not.
+   * @param content the String representation of the code point, if available.
+   * @param position the bounding box of this item in the page.
+   * @param baseLine the computed baseline of the text (may be different from the bottom of the
+   *     bounding box - consider descenders)
+   * @param style the style computed for the text based on current rendering state.
+   * @param startText whether this text is the first in a sequence or not.
    */
-  public Text(String content, Rectangle2D position, float baseLine, Style style,
-      boolean startText) {
+  public Text(
+      String content, Rectangle2D position, float baseLine, Style style, boolean startText) {
     this.content = content;
     this.position = position;
     this.style = style;
@@ -97,8 +92,7 @@ public class Text implements Positioned, Styled, Baselined {
   /**
    * Sets whether this text is the last in a sequence or not.
    *
-   * @param endText
-   *          the new end text
+   * @param endText the new end text
    */
   public void setEndText(boolean endText) {
     this.endText = endText;

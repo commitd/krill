@@ -1,8 +1,7 @@
 package io.committed.krill.extraction.tika.csv;
 
-import org.junit.Test;
-
 import io.committed.krill.extraction.tika.helper.AbstractTikaFormatExtractorIT;
+import org.junit.Test;
 
 public class CsvEmptyTikaFormatExtractorIT extends AbstractTikaFormatExtractorIT {
 
@@ -14,7 +13,6 @@ public class CsvEmptyTikaFormatExtractorIT extends AbstractTikaFormatExtractorIT
 
   @Test
   public void testBody() {
-    assertBody("" );
+    assertBody("");
   }
-
 }

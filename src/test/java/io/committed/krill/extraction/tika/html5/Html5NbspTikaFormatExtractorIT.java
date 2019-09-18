@@ -1,8 +1,7 @@
 package io.committed.krill.extraction.tika.html5;
 
-import org.junit.Test;
-
 import io.committed.krill.extraction.tika.helper.AbstractTikaFormatExtractorIT;
+import org.junit.Test;
 
 public class Html5NbspTikaFormatExtractorIT extends AbstractTikaFormatExtractorIT {
 
@@ -12,17 +11,16 @@ public class Html5NbspTikaFormatExtractorIT extends AbstractTikaFormatExtractorI
     super(RESOURCE_NAME);
   }
 
-
   @Test
   public void testBody() {
-    assertBody("" +
-        "<main class=\"Document\"> \n" +
-        " <article> \n" +
-        "  <p>This document contains nbsp</p> \n" +
-        "  <p> </p> \n" +
-        "  <p> We dont' want those</p> \n" +
-        " </article> \n" +
-        "</main>");
+    assertBody(
+        ""
+            + "<main class=\"Document\"> \n"
+            + " <article> \n"
+            + "  <p>This document contains nbsp</p> \n"
+            + "  <p> </p> \n"
+            + "  <p> We dont' want those</p> \n"
+            + " </article> \n"
+            + "</main>");
   }
-
 }

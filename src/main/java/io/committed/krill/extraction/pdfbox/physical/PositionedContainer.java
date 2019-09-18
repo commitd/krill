@@ -8,8 +8,7 @@ import java.util.stream.Collectors;
 /**
  * A base implementation of {@link Container} that is also {@link Positioned}.
  *
- * @param <T>
- *          the type of contents, which must also be {@link Positioned}
+ * @param <T> the type of contents, which must also be {@link Positioned}
  */
 public class PositionedContainer<T extends Positioned> implements Container<T>, Positioned {
 
@@ -25,8 +24,7 @@ public class PositionedContainer<T extends Positioned> implements Container<T>, 
   /**
    * Creates a new PositionedContainer for the given list of {@link Positioned} content.
    *
-   * @param content
-   *          the content
+   * @param content the content
    */
   public PositionedContainer(List<T> content) {
     this.content = content;
@@ -46,9 +44,11 @@ public class PositionedContainer<T extends Positioned> implements Container<T>, 
       T next = content.iterator().next();
       return next == null ? EMPTY_BOUNDS : next.getPosition();
     }
-    Optional<Rectangle2D> bounds = content.stream()
-        .filter(s -> s != null && !s.getPosition().isEmpty()).map(Positioned::getPosition)
-        .reduce((left, right) -> left.createUnion(right));
+    Optional<Rectangle2D> bounds =
+        content.stream()
+            .filter(s -> s != null && !s.getPosition().isEmpty())
+            .map(Positioned::getPosition)
+            .reduce((left, right) -> left.createUnion(right));
 
     return bounds.isPresent() ? bounds.get() : EMPTY_BOUNDS;
   }

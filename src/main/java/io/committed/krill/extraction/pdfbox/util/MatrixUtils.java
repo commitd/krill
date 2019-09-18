@@ -1,16 +1,13 @@
 package io.committed.krill.extraction.pdfbox.util;
 
+import java.awt.geom.AffineTransform;
+import java.util.Optional;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.util.Matrix;
 
-import java.awt.geom.AffineTransform;
-import java.util.Optional;
-
-/**
- * PDF matrix utility functions.
- */
+/** PDF matrix utility functions. */
 public class MatrixUtils {
 
   private MatrixUtils() {
@@ -19,17 +16,13 @@ public class MatrixUtils {
 
   /**
    * Create the transform for rendering items onto the page.
-   * <p>
-   * This applies a translation and a scale of (-1,1) so that the origin is top left not bottom
-   * left, and applies rotation if the page is declared rotated.
-   * </p>
    *
-   * @param matrix
-   *          the current PDF transformational matrix
-   * @param page
-   *          the page
-   * @param font
-   *          an optional font (if present, the matrix is concatenated at the right point)
+   * <p>This applies a translation and a scale of (-1,1) so that the origin is top left not bottom
+   * left, and applies rotation if the page is declared rotated.
+   *
+   * @param matrix the current PDF transformational matrix
+   * @param page the page
+   * @param font an optional font (if present, the matrix is concatenated at the right point)
    * @return an {@link AffineTransform} for the current rendering matrices.
    */
   public static AffineTransform createTransform(Matrix matrix, PDPage page, Optional<PDFont> font) {
@@ -50,8 +43,7 @@ public class MatrixUtils {
   /**
    * Creates the page translation transform.
    *
-   * @param page
-   *          the page
+   * @param page the page
    * @return the affine transform
    */
   public static AffineTransform createPageTranslationTransform(PDPage page) {
@@ -64,8 +56,7 @@ public class MatrixUtils {
   /**
    * Creates the page rotation transform.
    *
-   * @param page
-   *          the page
+   * @param page the page
    * @return the affine transform
    */
   public static AffineTransform createPageRotationTransform(PDPage page) {
@@ -73,8 +64,8 @@ public class MatrixUtils {
     AffineTransform transform = new AffineTransform();
     transform.concatenate(
         AffineTransform.getTranslateInstance(cropBox.getHeight() / 2, cropBox.getWidth() / 2));
-    transform
-        .concatenate(AffineTransform.getRotateInstance(Math.toRadians(360d - page.getRotation())));
+    transform.concatenate(
+        AffineTransform.getRotateInstance(Math.toRadians(360d - page.getRotation())));
     transform.concatenate(
         AffineTransform.getTranslateInstance(-cropBox.getWidth() / 2, -cropBox.getHeight() / 2));
     return transform;

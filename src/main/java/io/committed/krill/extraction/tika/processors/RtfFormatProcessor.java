@@ -5,9 +5,8 @@ import org.jsoup.nodes.Document;
 
 /**
  * A simple plain text document parser which places all content under a pre tag.
- * <p>
- * Uses the same main class=Document structure as {@link WordFormatProcessor}.
- * </p>
+ *
+ * <p>Uses the same main class=Document structure as {@link WordFormatProcessor}.
  */
 public class RtfFormatProcessor extends AbstractJsoupFormatProcessor {
 
@@ -19,5 +18,4 @@ public class RtfFormatProcessor extends AbstractJsoupFormatProcessor {
 
     return document;
   }
-
 }

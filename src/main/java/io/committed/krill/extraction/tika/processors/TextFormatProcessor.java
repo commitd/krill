@@ -9,14 +9,12 @@ import org.jsoup.select.Elements;
 
 /**
  * A simple plain text document parser which places all content under a pre tag.
- * <p>
- * This basically replicates the original Tika to text approach but uses a sane pre tag rather than
- * p.
- * </p>
- * <p>
- * Because everything is places under s single pre by Tika, we do not add the main class="Document"
- * as an indication that is not structured.
- * </p>
+ *
+ * <p>This basically replicates the original Tika to text approach but uses a sane pre tag rather
+ * than p.
+ *
+ * <p>Because everything is places under s single pre by Tika, we do not add the main
+ * class="Document" as an indication that is not structured.
  */
 public class TextFormatProcessor extends AbstractJsoupFormatProcessor {
 
@@ -51,5 +49,4 @@ public class TextFormatProcessor extends AbstractJsoupFormatProcessor {
     }
     return allText;
   }
-
 }

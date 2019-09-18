@@ -1,8 +1,6 @@
 package io.committed.krill.extraction.pdfbox.physical;
 
-/**
- * Represents the calculated style for text in a PDF.
- */
+/** Represents the calculated style for text in a PDF. */
 public class Style {
 
   /** The name. */
@@ -26,21 +24,15 @@ public class Style {
   /**
    * Creates a new style.
    *
-   * @param name
-   *          the font name
-   * @param size
-   *          the font size in points
-   * @param bold
-   *          whether the font is deemed bold
-   * @param italic
-   *          whether the font is deemed italic
-   * @param underlined
-   *          whether the font is deemed underlined
-   * @param color
-   *          the color of the text
+   * @param name the font name
+   * @param size the font size in points
+   * @param bold whether the font is deemed bold
+   * @param italic whether the font is deemed italic
+   * @param underlined whether the font is deemed underlined
+   * @param color the color of the text
    */
-  public Style(String name, float size, boolean bold, boolean italic, boolean underlined,
-      String color) {
+  public Style(
+      String name, float size, boolean bold, boolean italic, boolean underlined, String color) {
     this.name = name;
     this.size = size;
     this.bold = bold;
@@ -52,11 +44,15 @@ public class Style {
   /**
    * Copy constructor.
    *
-   * @param style
-   *          the style to copy
+   * @param style the style to copy
    */
   public Style(Style style) {
-    this(style.getName(), style.getSize(), style.isBold(), style.isItalic(), style.isUnderlined(),
+    this(
+        style.getName(),
+        style.getSize(),
+        style.isBold(),
+        style.isItalic(),
+        style.isUnderlined(),
         style.getColor());
   }
 
@@ -110,11 +106,9 @@ public class Style {
 
   /**
    * Returns whether this should be considered an underlined style.
-   * 
-   * <p>
-   * There is no provision for underlining in PDF files, so it is achieved through drawing lines in
-   * the appropriate place - therefore this flag is determined by page analysis alone.
-   * </p>
+   *
+   * <p>There is no provision for underlining in PDF files, so it is achieved through drawing lines
+   * in the appropriate place - therefore this flag is determined by page analysis alone.
    *
    * @return true, if is underlined
    */
@@ -125,8 +119,7 @@ public class Style {
   /**
    * Sets the underlined.
    *
-   * @param underlined
-   *          the new underlined
+   * @param underlined the new underlined
    */
   public void setUnderlined(boolean underlined) {
     this.underlined = underlined;
@@ -185,5 +178,4 @@ public class Style {
     }
     return true;
   }
-
 }

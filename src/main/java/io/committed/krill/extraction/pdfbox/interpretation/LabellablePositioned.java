@@ -1,7 +1,6 @@
 package io.committed.krill.extraction.pdfbox.interpretation;
 
 import io.committed.krill.extraction.pdfbox.physical.Positioned;
-
 import java.util.Set;
 
 /**
@@ -18,12 +17,10 @@ public interface LabellablePositioned extends Positioned {
   Set<BlockTypeLabel> getLabels();
 
   /**
-   * Adds a label to the set - not intended to be called by client code, only
-   * {@link BlockTypeClassifier}s.
+   * Adds a label to the set - not intended to be called by client code, only {@link
+   * BlockTypeClassifier}s.
    *
-   * @param label
-   *          the label to add.
+   * @param label the label to add.
    */
   void addLabel(BlockTypeLabel label);
-
 }

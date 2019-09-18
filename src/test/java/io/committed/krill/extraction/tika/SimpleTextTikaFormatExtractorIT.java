@@ -1,8 +1,7 @@
 package io.committed.krill.extraction.tika;
 
-import org.junit.Test;
-
 import io.committed.krill.extraction.tika.helper.AbstractTikaFormatExtractorIT;
+import org.junit.Test;
 
 public class SimpleTextTikaFormatExtractorIT extends AbstractTikaFormatExtractorIT {
 
@@ -14,8 +13,10 @@ public class SimpleTextTikaFormatExtractorIT extends AbstractTikaFormatExtractor
 
   @Test
   public void testBody() {
-    assertBody("" + "<pre>This is a simple text file.\n" + "\n"
-        + "It will be output as a set of lines.</pre>");
+    assertBody(
+        ""
+            + "<pre>This is a simple text file.\n"
+            + "\n"
+            + "It will be output as a set of lines.</pre>");
   }
-
 }

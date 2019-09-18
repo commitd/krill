@@ -5,8 +5,7 @@ import java.util.List;
 /**
  * Simple container for multiple items.
  *
- * @param <T>
- *          the item type.
+ * @param <T> the item type.
  */
 @FunctionalInterface
 public interface Container<T> {
@@ -17,5 +16,4 @@ public interface Container<T> {
    * @return the items.
    */
   List<T> getContents();
-
 }
