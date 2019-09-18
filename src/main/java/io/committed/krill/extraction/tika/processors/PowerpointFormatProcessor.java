@@ -73,6 +73,11 @@ public class PowerpointFormatProcessor extends AbstractJsoupFormatProcessor {
       document.select("div.slide-master-content").tagName("details");
       document.select("div.slide-content").tagName("section");
       document.select("div.slide-notes").tagName("aside");
+      document.select("div.notes").tagName("aside").removeClass("notes");
+      document.select("div.notes-content").forEach(e -> {
+        e.children().forEach(c -> e.parent().appendChild(c));
+        e.remove();
+      });
     } else {
       // Missing div.slide way...
 

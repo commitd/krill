@@ -27,8 +27,7 @@ public class PptPlainSimpleTitleAndSlidesTikaFormatExtractorIT
         + "    <li>First section, second bullet</li> \n" + "   </ul> \n" + "   <ul> \n"
         + "    <li>Second section, first bullet</li> \n"
         + "    <li>Second section, second bullet</li> \n" + "   </ul> \n" + "  </section> \n"
-        + " </article> \n" + " <aside> \n" + "  <p>Notes</p> \n" + "  <p>More notes</p> \n"
-        + " </aside> \n" + "</main>");
+        + " </article> \n" + "</main>");
   }
 
 

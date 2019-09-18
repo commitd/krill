@@ -16,8 +16,7 @@ public class PptPlainSimpleTitleSlideTikaFormatExtractorIT extends AbstractTikaF
   public void testBody() {
     assertBody("" + "<main class=\"SlideShow\"> \n" + " <article class=\"Slide\"> \n"
         + "  <section> \n" + "   <p>Title</p> \n" + "   <p>Subtitle</p> \n" + "  </section> \n"
-        + "  <aside> \n" + "   <p>Notes</p> \n" + "  </aside> \n" + " </article> \n" + " <aside> \n"
-        + "  <p>Notes</p> \n" + " </aside> \n" + "</main>");
+        + "  <aside> \n" + "   <p>Notes</p> \n" + "  </aside> \n" + " </article> \n" + "</main>");
   }
 
 }
