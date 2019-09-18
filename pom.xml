@@ -47,7 +47,7 @@
 		<commons-io.version>2.6</commons-io.version>
 		<commons-csv.version>1.5</commons-csv.version>
 		<slf4j.version>1.7.25</slf4j.version>
-		<tika.version>1.20</tika.version>
+		<tika.version>1.22</tika.version>
 		<jbig2-imageio.version>3.0.1</jbig2-imageio.version>
 		<guava.version>25.1-jre</guava.version>
 		<jsoup.version>1.11.3</jsoup.version>
