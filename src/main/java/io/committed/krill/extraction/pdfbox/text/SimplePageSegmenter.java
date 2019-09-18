@@ -30,7 +30,11 @@ public class SimplePageSegmenter implements PageSegmenter {
   /** The Constant FIND_TABLES. */
   private static final boolean FIND_TABLES = true;
 
-  /** Create a new {@link SimplePageSegmenter}. */
+  /**
+   * Create a new {@link SimplePageSegmenter}
+   *
+   * @param parserConfig the config
+   */
   public SimplePageSegmenter(PdfParserConfig parserConfig) {
     lineFinder = new BaselineLineFinder(parserConfig);
     wordSegmenter = new WhitespaceWordSegmenter();

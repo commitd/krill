@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * class.
  *
  * <p>The majority of the metadata is added through reflectively calling private method {@link
- * PDFParser#extractMetadata} rather than duplicating the logic.
+ * PDFParser} extractMetadata rather than duplicating the logic.
  */
 public class PdfMetadataParser implements Serializable {
 
