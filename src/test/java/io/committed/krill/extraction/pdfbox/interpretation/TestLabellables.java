@@ -2,17 +2,13 @@ package io.committed.krill.extraction.pdfbox.interpretation;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
-import io.committed.krill.extraction.pdfbox.interpretation.BlockTypeLabel;
-import io.committed.krill.extraction.pdfbox.interpretation.LabellablePositioned;
 import io.committed.krill.extraction.pdfbox.physical.ImageBlock;
 import io.committed.krill.extraction.pdfbox.physical.TextBlock;
 import io.committed.krill.extraction.pdfbox.text.TableBlock;
-
 import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.EnumSet;
+import org.junit.Test;
 
 public class TestLabellables {
 
@@ -42,6 +38,4 @@ public class TestLabellables {
     block.addLabel(BlockTypeLabel.FOOTER);
     assertEquals(block.getLabels(), EnumSet.of(BlockTypeLabel.HEADER, BlockTypeLabel.FOOTER));
   }
-
-
 }

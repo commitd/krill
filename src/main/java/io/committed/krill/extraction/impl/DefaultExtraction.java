@@ -1,15 +1,12 @@
 package io.committed.krill.extraction.impl;
 
 import com.google.common.collect.Multimap;
-
 import io.committed.krill.extraction.Extraction;
 
 /**
  * Default implementation of the Extraction interface.
  *
- * <p>
- * A simple immutable POJO.
- * </p>
+ * <p>A simple immutable POJO.
  */
 public class DefaultExtraction implements Extraction {
 
@@ -20,10 +17,8 @@ public class DefaultExtraction implements Extraction {
   /**
    * Instantiates a new default extraction.
    *
-   * @param html
-   *          the html
-   * @param metadata
-   *          the metadata
+   * @param html the html
+   * @param metadata the metadata
    */
   public DefaultExtraction(final String html, final Multimap<String, String> metadata) {
     this.html = html;
@@ -43,5 +38,4 @@ public class DefaultExtraction implements Extraction {
   public Multimap<String, String> getMetadata() {
     return metadata;
   }
-
 }

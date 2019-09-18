@@ -1,5 +1,12 @@
 package io.committed.krill.extraction.pdfbox.text;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import io.committed.krill.extraction.pdfbox.physical.Baselined;
+import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
+import io.committed.krill.extraction.pdfbox.physical.Style;
+import io.committed.krill.extraction.pdfbox.physical.Text;
+import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -7,24 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
-import io.committed.krill.extraction.pdfbox.physical.Baselined;
-import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
-import io.committed.krill.extraction.pdfbox.physical.Style;
-import io.committed.krill.extraction.pdfbox.physical.Text;
-import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
-
 /**
- * A {@link LineFinder} that identifies lines by grouping by {@link Style} and then by
- * {@link Baselined baseline}.
- * <p>
- * A line break within a baseline (eg for multiple columns) is created if the next {@link Text}
+ * A {@link LineFinder} that identifies lines by grouping by {@link Style} and then by {@link
+ * Baselined baseline}.
+ *
+ * <p>A line break within a baseline (eg for multiple columns) is created if the next {@link Text}
  * encountered when ordering by minimum X position is considered too far from the previous, or when
  * a new stream of {@link Text}s was created in the PDF (some generators emit each column line as a
  * new sequence).
- * </p>
  */
 public class BaselineLineFinder implements LineFinder {
 
@@ -39,8 +36,11 @@ public class BaselineLineFinder implements LineFinder {
 
   @Override
   public List<PositionedContainer<Text>> findLines(List<PositionedContainer<Text>> sequences) {
-    List<Text> positions = sequences.stream().map(PositionedContainer::getContents)
-        .flatMap(List::stream).collect(Collectors.toList());
+    List<Text> positions =
+        sequences.stream()
+            .map(PositionedContainer::getContents)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
     List<ArrayList<Text>> candidateLines = findBaselineLines(positions);
     List<PositionedContainer<Text>> lines = new ArrayList<>();
 
@@ -111,12 +111,14 @@ public class BaselineLineFinder implements LineFinder {
    * @param text the text
    * @return true, if is line break
    */
-  private boolean isLineBreak(List<Text> currentLine, float prevBaseLine, float cumulativeWidth,
-      Text previous, Text text) {
+  private boolean isLineBreak(
+      List<Text> currentLine, float prevBaseLine, float cumulativeWidth, Text previous, Text text) {
     boolean baselineChanged = Float.compare(prevBaseLine, text.getBaseline()) != 0;
     boolean haveContent = !currentLine.isEmpty();
-    boolean tooFar = CONSIDER_TEXT_STREAM && text.isStartText()
-        && isTooFarAwayHorizontally(text, previous, cumulativeWidth / currentLine.size());
+    boolean tooFar =
+        CONSIDER_TEXT_STREAM
+            && text.isStartText()
+            && isTooFarAwayHorizontally(text, previous, cumulativeWidth / currentLine.size());
     return haveContent && (tooFar || baselineChanged);
   }
 
@@ -137,5 +139,4 @@ public class BaselineLineFinder implements LineFinder {
     double maxX = previous.getPosition().getMaxX();
     return minX - maxX >= parserConfig.getMaxBaselineSeprationMultiplier() * averageWidth;
   }
-
 }

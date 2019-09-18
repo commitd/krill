@@ -12,9 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Finds grids in a collection of lines.
- */
+/** Finds grids in a collection of lines. */
 public class GridExtractor {
 
   /** The Constant QUANTISATION. */
@@ -23,8 +21,7 @@ public class GridExtractor {
   /**
    * Find grids.
    *
-   * @param lines
-   *          the lines
+   * @param lines the lines
    * @return the collection
    */
   public Collection<Grid> findGrids(Collection<Line2D> lines) {
@@ -32,11 +29,12 @@ public class GridExtractor {
     Collection<Line2D> xlines = new LinkedHashSet<>();
     Collection<Line2D> ylines = new LinkedHashSet<>();
     for (Line2D line : lines) {
-      Line2D roundedLine = new EqualsAndHashcodeLine2D(
-          QUANTISATION * Math.round(line.getX1() / QUANTISATION),
-          QUANTISATION * Math.round(line.getY1() / QUANTISATION),
-          QUANTISATION * Math.round(line.getX2() / QUANTISATION),
-          QUANTISATION * Math.round(line.getY2() / QUANTISATION));
+      Line2D roundedLine =
+          new EqualsAndHashcodeLine2D(
+              QUANTISATION * Math.round(line.getX1() / QUANTISATION),
+              QUANTISATION * Math.round(line.getY1() / QUANTISATION),
+              QUANTISATION * Math.round(line.getX2() / QUANTISATION),
+              QUANTISATION * Math.round(line.getY2() / QUANTISATION));
 
       if (equalTo(roundedLine.getX1(), roundedLine.getX2())
           && equalTo(roundedLine.getY1(), roundedLine.getY2())) {
@@ -57,8 +55,7 @@ public class GridExtractor {
   /**
    * Make grid.
    *
-   * @param points
-   *          the points
+   * @param points the points
    * @return the grid
    */
   private Grid makeGrid(Collection<Point2D> points) {
@@ -83,14 +80,18 @@ public class GridExtractor {
       Point2D bottomLeft = null;
       Point2D bottomRight = null;
       for (Point2D point2d : sortedPoints) {
-        if (topRight == null && equalTo(point2d.getY(), topLeft.getY())
+        if (topRight == null
+            && equalTo(point2d.getY(), topLeft.getY())
             && point2d.getX() > topLeft.getX()) {
           topRight = point2d;
-        } else if (bottomLeft == null && point2d.getY() > topLeft.getY()
+        } else if (bottomLeft == null
+            && point2d.getY() > topLeft.getY()
             && equalTo(point2d.getX(), topLeft.getX())) {
           bottomLeft = point2d;
-        } else if (topRight != null && equalTo(point2d.getX(), topRight.getX())
-            && bottomLeft != null && equalTo(point2d.getY(), bottomLeft.getY())) {
+        } else if (topRight != null
+            && equalTo(point2d.getX(), topRight.getX())
+            && bottomLeft != null
+            && equalTo(point2d.getY(), bottomLeft.getY())) {
           bottomRight = point2d;
           break;
         }
@@ -102,10 +103,12 @@ public class GridExtractor {
           grid.addRow(row);
         }
 
-        int colSpan = Arrays.binarySearch(xpositions, bottomRight.getX())
-            - Arrays.binarySearch(xpositions, topLeft.getX());
-        int rowSpan = Arrays.binarySearch(ypositions, bottomRight.getY())
-            - Arrays.binarySearch(ypositions, topLeft.getY());
+        int colSpan =
+            Arrays.binarySearch(xpositions, bottomRight.getX())
+                - Arrays.binarySearch(xpositions, topLeft.getX());
+        int rowSpan =
+            Arrays.binarySearch(ypositions, bottomRight.getY())
+                - Arrays.binarySearch(ypositions, topLeft.getY());
         Cell cell = new Cell(topLeft, bottomRight, colSpan, rowSpan);
         row.addCell(cell);
       }
@@ -117,8 +120,7 @@ public class GridExtractor {
   /**
    * Checks if is xline.
    *
-   * @param line
-   *          the line
+   * @param line the line
    * @return true, if is xline
    */
   private static boolean isXline(Line2D line) {
@@ -128,8 +130,7 @@ public class GridExtractor {
   /**
    * Checks if is yline.
    *
-   * @param line
-   *          the line
+   * @param line the line
    * @return true, if is yline
    */
   private static boolean isYline(Line2D line) {
@@ -139,14 +140,12 @@ public class GridExtractor {
   /**
    * Find intersection points.
    *
-   * @param xlines
-   *          the xlines
-   * @param ylines
-   *          the ylines
+   * @param xlines the xlines
+   * @param ylines the ylines
    * @return the collection
    */
-  private Collection<Collection<Point2D>> findIntersectionPoints(Collection<Line2D> xlines,
-      Collection<Line2D> ylines) {
+  private Collection<Collection<Point2D>> findIntersectionPoints(
+      Collection<Line2D> xlines, Collection<Line2D> ylines) {
     Collection<Line2D> lines = new ArrayList<>();
     lines.addAll(xlines);
     lines.addAll(ylines);
@@ -165,8 +164,7 @@ public class GridExtractor {
   /**
    * Collect intersecting lines.
    *
-   * @param lines
-   *          the lines
+   * @param lines the lines
    * @return the collection
    */
   private static Collection<Collection<Line2D>> collectIntersectingLines(Collection<Line2D> lines) {
@@ -198,14 +196,14 @@ public class GridExtractor {
   /**
    * Merge groups.
    *
-   * @param groups
-   *          the groups
+   * @param groups the groups
    */
   private static void mergeGroups(Collection<Collection<Line2D>> groups) {
     int previousSize = 0;
     while (previousSize != groups.size()) {
       previousSize = groups.size();
-      outer: for (Collection<Line2D> outer : groups) {
+      outer:
+      for (Collection<Line2D> outer : groups) {
         Iterator<Collection<Line2D>> it = groups.iterator();
         while (it.hasNext()) {
           Collection<Line2D> inner = it.next();
@@ -229,8 +227,7 @@ public class GridExtractor {
   /**
    * Find intersections.
    *
-   * @param lines
-   *          the lines
+   * @param lines the lines
    * @return the collection
    */
   private Collection<Point2D> findIntersections(Collection<Line2D> lines) {
@@ -249,9 +246,10 @@ public class GridExtractor {
       for (Line2D yline : ylines) {
         if (xline.intersectsLine(yline)) {
           Point2D intersectionPoint = intersectionPoint(xline, yline);
-          Point2D roundedIntersectionPoint = new Point2D.Double(
-              (int) Math.round(intersectionPoint.getX()),
-              (int) Math.round(intersectionPoint.getY()));
+          Point2D roundedIntersectionPoint =
+              new Point2D.Double(
+                  (int) Math.round(intersectionPoint.getX()),
+                  (int) Math.round(intersectionPoint.getY()));
           // point length line intersections at ends result in NaN computations and spurious (0,0)
           // points
           if (!equalTo(roundedIntersectionPoint.getX(), 0)
@@ -267,10 +265,8 @@ public class GridExtractor {
   /**
    * Equal to.
    *
-   * @param d1
-   *          the d 1
-   * @param d2
-   *          the d 2
+   * @param d1 the d 1
+   * @param d2 the d 2
    * @return true, if successful
    */
   static boolean equalTo(double d1, double d2) {
@@ -280,10 +276,8 @@ public class GridExtractor {
   /**
    * Intersection point.
    *
-   * @param l1
-   *          the l 1
-   * @param l2
-   *          the l 2
+   * @param l1 the l 1
+   * @param l2 the l 2
    * @return the point 2 D
    */
   static Point2D intersectionPoint(Line2D l1, Line2D l2) {
@@ -313,23 +307,17 @@ public class GridExtractor {
   /**
    * Determinate calculation.
    *
-   * @param avalue
-   *          the a
-   * @param bvalue
-   *          the b
-   * @param cvalue
-   *          the c
-   * @param dvalue
-   *          the d
+   * @param avalue the a
+   * @param bvalue the b
+   * @param cvalue the c
+   * @param dvalue the d
    * @return the determinate.
    */
   static double determinate(double avalue, double bvalue, double cvalue, double dvalue) {
     return (avalue * dvalue) - (bvalue * cvalue);
   }
 
-  /**
-   * The Class MyLine2D.
-   */
+  /** The Class MyLine2D. */
   private static class EqualsAndHashcodeLine2D extends Line2D.Double {
 
     /** The Constant serialVersionUID. */
@@ -338,14 +326,10 @@ public class GridExtractor {
     /**
      * Instantiates a new my line 2 D.
      *
-     * @param x1
-     *          the x 1
-     * @param y1
-     *          the y 1
-     * @param x2
-     *          the x 2
-     * @param y2
-     *          the y 2
+     * @param x1 the x 1
+     * @param y1 the y 1
+     * @param x2 the x 2
+     * @param y2 the y 2
      */
     public EqualsAndHashcodeLine2D(double x1, double y1, double x2, double y2) {
       super(x1, y1, x2, y2);
@@ -378,5 +362,4 @@ public class GridExtractor {
       return getX1() + " " + getX2() + " " + getY1() + " " + getY2();
     }
   }
-
 }

@@ -1,10 +1,10 @@
 package io.committed.krill.extraction.tika.pdf;
 
+import io.committed.krill.extraction.pdfbox.PdfStructuredExtractor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Set;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -13,8 +13,6 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-
-import io.committed.krill.extraction.pdfbox.PdfStructuredExtractor;
 
 public class PdfParser implements Parser {
 
@@ -35,8 +33,9 @@ public class PdfParser implements Parser {
   }
 
   @Override
-  public void parse(InputStream stream, ContentHandler handler, Metadata metadata,
-      ParseContext context) throws IOException, SAXException, TikaException {
+  public void parse(
+      InputStream stream, ContentHandler handler, Metadata metadata, ParseContext context)
+      throws IOException, SAXException, TikaException {
     try (PDDocument document = PDDocument.load(stream)) {
       parseMetadata(metadata, context, document);
       parseContent(handler, document);
@@ -55,5 +54,4 @@ public class PdfParser implements Parser {
     metadataParser.processDocumentInformation(document, metadata);
     metadataParser.processMetadata(document, metadata, context);
   }
-
 }

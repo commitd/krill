@@ -2,17 +2,14 @@ package io.committed.krill.extraction.pdfbox.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.util.Optional;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.util.Matrix;
 import org.junit.Before;
 import org.junit.Test;
-
-import io.committed.krill.extraction.pdfbox.util.MatrixUtils;
-
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.util.Optional;
 
 public class MatrixUtilsTest {
 
@@ -55,5 +52,4 @@ public class MatrixUtilsTest {
     Point2D result = transform.transform(new Point2D.Double(0, 0), new Point2D.Double());
     assertEquals(new Point2D.Double(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth()), result);
   }
-
 }

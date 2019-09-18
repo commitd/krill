@@ -4,19 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.committed.krill.extraction.Extraction;
 import io.committed.krill.extraction.exception.ExtractionException;
-import io.committed.krill.extraction.simple.ToStringFormatExtractor;
 import io.committed.krill.extraction.support.test.ThrowOnReadInputStream;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 public class ToStringFormatExtractorTest {
 

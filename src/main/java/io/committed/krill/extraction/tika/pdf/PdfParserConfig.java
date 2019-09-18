@@ -4,9 +4,7 @@ import java.io.Serializable;
 
 public class PdfParserConfig implements Serializable {
 
-  /**
-   * generated serialisation id.
-   */
+  /** generated serialisation id. */
   private static final long serialVersionUID = -9072751151203453308L;
 
   /** The emit absolute positioning flag. */
@@ -266,5 +264,4 @@ public class PdfParserConfig implements Serializable {
     this.disableGridTableExtraction = disableGridTableExtraction;
     return this;
   }
-
 }

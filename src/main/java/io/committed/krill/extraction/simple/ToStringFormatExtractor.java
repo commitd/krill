@@ -2,24 +2,21 @@ package io.committed.krill.extraction.simple;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
-
 import io.committed.krill.extraction.Extraction;
 import io.committed.krill.extraction.FormatExtractor;
 import io.committed.krill.extraction.exception.ExtractionException;
 import io.committed.krill.extraction.impl.DefaultExtraction;
-import org.apache.commons.io.IOUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import org.apache.commons.io.IOUtils;
 
 /**
  * A naive implementation of {@link FormatExtractor} which does not attempt to extract any structure
  * from the given stream, simply converting the {@link InputStream} to a HTML String using the
  * specified {@link Charset}.
- * <p>
- * The String is wrapped in a pre tag (under the html body).
- * </p>
+ *
+ * <p>The String is wrapped in a pre tag (under the html body).
  */
 public class ToStringFormatExtractor implements FormatExtractor {
 
@@ -30,8 +27,7 @@ public class ToStringFormatExtractor implements FormatExtractor {
   /**
    * Instantiates a new to string format extractor.
    *
-   * @param charset
-   *          the charset to use
+   * @param charset the charset to use
    */
   public ToStringFormatExtractor(final Charset charset) {
     this.charset = charset;
@@ -48,5 +44,4 @@ public class ToStringFormatExtractor implements FormatExtractor {
       throw new ExtractionException("Unable to read stream as " + charset, exception);
     }
   }
-
 }

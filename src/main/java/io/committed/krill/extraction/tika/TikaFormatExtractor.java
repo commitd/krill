@@ -1,5 +1,20 @@
 package io.committed.krill.extraction.tika;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+import io.committed.krill.extraction.Extraction;
+import io.committed.krill.extraction.FormatExtractor;
+import io.committed.krill.extraction.exception.ExtractionException;
+import io.committed.krill.extraction.impl.DefaultExtraction;
+import io.committed.krill.extraction.tika.processors.CsvFormatProcessor;
+import io.committed.krill.extraction.tika.processors.ExcelFormatProcessor;
+import io.committed.krill.extraction.tika.processors.FormatProcessor;
+import io.committed.krill.extraction.tika.processors.HtmlFormatProcessor;
+import io.committed.krill.extraction.tika.processors.PdfFormatProcessor;
+import io.committed.krill.extraction.tika.processors.PowerpointFormatProcessor;
+import io.committed.krill.extraction.tika.processors.RtfFormatProcessor;
+import io.committed.krill.extraction.tika.processors.TextFormatProcessor;
+import io.committed.krill.extraction.tika.processors.WordFormatProcessor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -7,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.exception.ZeroByteFileException;
 import org.apache.tika.metadata.Metadata;
@@ -23,52 +37,29 @@ import org.apache.tika.sax.ToHTMLContentHandler;
 import org.apache.tika.sax.XHTMLContentHandler;
 import org.xml.sax.SAXException;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-
-import io.committed.krill.extraction.Extraction;
-import io.committed.krill.extraction.FormatExtractor;
-import io.committed.krill.extraction.exception.ExtractionException;
-import io.committed.krill.extraction.impl.DefaultExtraction;
-import io.committed.krill.extraction.tika.processors.CsvFormatProcessor;
-import io.committed.krill.extraction.tika.processors.ExcelFormatProcessor;
-import io.committed.krill.extraction.tika.processors.FormatProcessor;
-import io.committed.krill.extraction.tika.processors.HtmlFormatProcessor;
-import io.committed.krill.extraction.tika.processors.PdfFormatProcessor;
-import io.committed.krill.extraction.tika.processors.PowerpointFormatProcessor;
-import io.committed.krill.extraction.tika.processors.RtfFormatProcessor;
-import io.committed.krill.extraction.tika.processors.TextFormatProcessor;
-import io.committed.krill.extraction.tika.processors.WordFormatProcessor;
-
 /**
  * Extract HTML using Tika as the underlying reader.
- * <p>
- * This is the default implementation of FormatExtractor. It's setup is as follows:
- * </p>
+ *
+ * <p>This is the default implementation of FormatExtractor. It's setup is as follows:
  *
  * <ul>
- * <li>Replaces Tika's implementation of various parsers with our own, better performing tailored
- * parsers</li>
- * <li>Set up format specific content processors which clean the output of Tika</li>
+ *   <li>Replaces Tika's implementation of various parsers with our own, better performing tailored
+ *       parsers
+ *   <li>Set up format specific content processors which clean the output of Tika
  * </ul>
  *
- * <p>
- * When a stream is passed for extraction the Tika autodetection is used to determine which parser
- * to use (either Tika's or our replacement). Tika processes the stream and we collect the results
- * as HTML string together with the Metadata extracted by Tika.
- * </p>
- * <p>
- * Tika detects as part of its metadata the Content Type of the stream. This is used to select which
- * format processors will be used (if any).
- * </p>
- * <p>
- * The format processors act to clean up and standardise on a per document (content type) level.
+ * <p>When a stream is passed for extraction the Tika autodetection is used to determine which
+ * parser to use (either Tika's or our replacement). Tika processes the stream and we collect the
+ * results as HTML string together with the Metadata extracted by Tika.
+ *
+ * <p>Tika detects as part of its metadata the Content Type of the stream. This is used to select
+ * which format processors will be used (if any).
+ *
+ * <p>The format processors act to clean up and standardise on a per document (content type) level.
  * They convert the HTML from Tika into HTML5 tags, removing nonsense and adding back information
  * lost by Tika implementations.
- * </p>
- * <p>
- * Once the format processors have completed the result of extraction is returned.
- * </p>
+ *
+ * <p>Once the format processors have completed the result of extraction is returned.
  */
 public class TikaFormatExtractor implements FormatExtractor {
 
@@ -82,7 +73,6 @@ public class TikaFormatExtractor implements FormatExtractor {
 
   /**
    * Constructs a new {@link TikaFormatExtractor} with an {@link AutoDetectParser} and all parsers.
-   *
    */
   public TikaFormatExtractor() {
     this(new TikaFormatExtractorConfig.Builder().withDefaultParsers().build());
@@ -93,7 +83,6 @@ public class TikaFormatExtractor implements FormatExtractor {
    * provided by the configuration.
    *
    * @param config the configuration
-   *
    */
   public TikaFormatExtractor(TikaFormatExtractorConfig config) {
     parser = new AutoDetectParser();
@@ -102,19 +91,25 @@ public class TikaFormatExtractor implements FormatExtractor {
     addParsers(config.getParsers());
 
     addProcessor(new CsvFormatProcessor(), "text/csv", "text/tab-separated-values");
-    addProcessor(new ExcelFormatProcessor(), "application/vnd.ms-excel",
+    addProcessor(
+        new ExcelFormatProcessor(),
+        "application/vnd.ms-excel",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
         "application/vnd.ms-excel.sheet.macroEnabled.12",
         "application/vnd.ms-excel.template.macroEnabled.12",
         "application/vnd.ms-excel.addin.macroEnabled.12",
         "application/vnd.ms-excel.sheet.binary.macroEnabled.12");
-    addProcessor(new WordFormatProcessor(), "application/msword",
+    addProcessor(
+        new WordFormatProcessor(),
+        "application/msword",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
         "application/vnd.ms-word.document.macroEnabled.12",
         "application/vnd.ms-word.template.macroEnabled.12");
-    addProcessor(new PowerpointFormatProcessor(), "application/vnd.ms-powerpoint",
+    addProcessor(
+        new PowerpointFormatProcessor(),
+        "application/vnd.ms-powerpoint",
         "application/vnd.openxmlformats-officedocument.presentationml.presentation",
         "application/vnd.openxmlformats-officedocument.presentationml.template",
         "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
@@ -123,7 +118,9 @@ public class TikaFormatExtractor implements FormatExtractor {
         "application/vnd.ms-powerpoint.template.macroEnabled.12",
         "application/vnd.ms-powerpoint.slideshow.macroEnabled.12");
     addProcessor(new PdfFormatProcessor(), MediaType.application("pdf").toString());
-    addProcessor(new HtmlFormatProcessor(), MediaType.text("html").toString(),
+    addProcessor(
+        new HtmlFormatProcessor(),
+        MediaType.text("html").toString(),
         MediaType.application("xhtml+xml").toString());
     addProcessor(new RtfFormatProcessor(), MediaType.application("rtf").toString());
 
@@ -151,11 +148,14 @@ public class TikaFormatExtractor implements FormatExtractor {
     final ToHTMLContentHandler handler = new ToHTMLContentHandler();
 
     try {
-      parser.parse(stream,
+      parser.parse(
+          stream,
           new XHTMLContentHandler(new NoHeadTagInBodyContentHandler(handler), tikaMetadata),
-          tikaMetadata, context);
-    } catch (ZeroByteFileException exception){
-      //If a file is zero bytes, then we don't want to throw an exception but continue with an empty HTML string
+          tikaMetadata,
+          context);
+    } catch (ZeroByteFileException exception) {
+      // If a file is zero bytes, then we don't want to throw an exception but continue with an
+      // empty HTML string
     } catch (IOException | SAXException | TikaException | NullPointerException exception) {
       throw new ExtractionException("Failed to parse stream", exception);
     }

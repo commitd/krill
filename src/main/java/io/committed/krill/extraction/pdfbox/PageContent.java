@@ -2,7 +2,6 @@ package io.committed.krill.extraction.pdfbox;
 
 import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
 import io.committed.krill.extraction.pdfbox.physical.Text;
-
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
@@ -10,22 +9,17 @@ import java.util.List;
 /**
  * Represents the raw extracted content from PDF file.
  *
- * <p>
- * All coordinates are given as a simple transformation of PDF space - each unit is 1/72 of an inch,
- * but the origin is the top left of the page, not the bottom left.
- * </p>
- * <p>
- * Text is given as a list of {@link PositionedContainer}s that contain {@link Text} elements (each
- * Text is a single code point).
- * </p>
- * <p>
- * Images are returned as a list of simple bounding boxes - no attempt is made to merge them
+ * <p>All coordinates are given as a simple transformation of PDF space - each unit is 1/72 of an
+ * inch, but the origin is the top left of the page, not the bottom left.
+ *
+ * <p>Text is given as a list of {@link PositionedContainer}s that contain {@link Text} elements
+ * (each Text is a single code point).
+ *
+ * <p>Images are returned as a list of simple bounding boxes - no attempt is made to merge them
  * together if they are completely adjacent to one another with no gaps.
- * </p>
- * <p>
- * Finally, the "crop box" for the page (as opposed to the media box) is given - this represents the
- * area that would be rendered on screen.
- * </p>
+ *
+ * <p>Finally, the "crop box" for the page (as opposed to the media box) is given - this represents
+ * the area that would be rendered on screen.
  */
 public class PageContent {
 
@@ -47,19 +41,17 @@ public class PageContent {
   /**
    * Instantiates a new page content.
    *
-   * @param textSequences
-   *          the text sequences
-   * @param imageLocations
-   *          the image locations
-   * @param lines
-   *          the lines
-   * @param rectangles
-   *          the rectangles
-   * @param cropBox
-   *          the crop box
+   * @param textSequences the text sequences
+   * @param imageLocations the image locations
+   * @param lines the lines
+   * @param rectangles the rectangles
+   * @param cropBox the crop box
    */
-  public PageContent(List<PositionedContainer<Text>> textSequences,
-      List<Rectangle2D> imageLocations, List<Line2D> lines, List<Rectangle2D> rectangles,
+  public PageContent(
+      List<PositionedContainer<Text>> textSequences,
+      List<Rectangle2D> imageLocations,
+      List<Line2D> lines,
+      List<Rectangle2D> rectangles,
       Rectangle2D cropBox) {
     this.textSequences = textSequences;
     this.imageLocations = imageLocations;
@@ -80,10 +72,9 @@ public class PageContent {
 
   /**
    * Returns a list of bounding boxes for the images in the page.
-   * <p>
-   * Image areas are given as a list of simple bounding boxes and no attempt is made to union them
-   * if they are immediately adjacent or overlap.
-   * </p>
+   *
+   * <p>Image areas are given as a list of simple bounding boxes and no attempt is made to union
+   * them if they are immediately adjacent or overlap.
    *
    * @return the image locations
    */
@@ -93,12 +84,10 @@ public class PageContent {
 
   /**
    * Returns all straight lines that were drawn on the page.
-   * 
-   * <p>
-   * Note: some lines on a page may be drawn as rectangles (this is how underline is typically
+   *
+   * <p>Note: some lines on a page may be drawn as rectangles (this is how underline is typically
    * rendered from MS Word) so this will not contain lines depicted with such shapes.
-   * </p>
-   * 
+   *
    * @return a list of lines on the page
    */
   public List<Line2D> getLines() {
@@ -107,11 +96,9 @@ public class PageContent {
 
   /**
    * Returns all rectangles that were drawn on the page.
-   * 
-   * <p>
-   * <strong>Note: see {@link #getLines()} - some rectangles are logically lines</strong>
-   * </p>
-   * 
+   *
+   * <p><strong>Note: see {@link #getLines()} - some rectangles are logically lines</strong>
+   *
    * @return a list of rectangles on the page.
    */
   public List<Rectangle2D> getRectangles() {
@@ -127,5 +114,4 @@ public class PageContent {
   public Rectangle2D getCropBox() {
     return cropBox;
   }
-
 }

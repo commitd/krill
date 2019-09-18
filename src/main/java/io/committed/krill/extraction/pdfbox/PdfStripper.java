@@ -1,5 +1,9 @@
 package io.committed.krill.extraction.pdfbox;
 
+import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
+import io.committed.krill.extraction.pdfbox.physical.Text;
+import io.committed.krill.extraction.pdfbox.text.CharacterExtractor;
+import io.committed.krill.extraction.pdfbox.util.MatrixUtils;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
@@ -9,7 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.pdfbox.contentstream.PDFGraphicsStreamEngine;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -21,17 +24,10 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.util.Matrix;
 import org.apache.pdfbox.util.Vector;
 
-import io.committed.krill.extraction.pdfbox.physical.PositionedContainer;
-import io.committed.krill.extraction.pdfbox.physical.Text;
-import io.committed.krill.extraction.pdfbox.text.CharacterExtractor;
-import io.committed.krill.extraction.pdfbox.util.MatrixUtils;
-
 /**
  * A replacement for {@link PDFTextStripper} that is aware of image areas, font colours, etc.
  *
- * <p>
- * Note: This class is NOT thread-safe.
- * </p>
+ * <p>Note: This class is NOT thread-safe.
  */
 public class PdfStripper extends PDFGraphicsStreamEngine {
 
@@ -62,26 +58,21 @@ public class PdfStripper extends PDFGraphicsStreamEngine {
   /** The current point. */
   private Point2D currentPoint;
 
-  /**
-   * Instantiates a new pdf stripper.
-   */
+  /** Instantiates a new pdf stripper. */
   public PdfStripper() {
     super(null);
   }
 
-
   /**
    * Given a PDF document and a 0-indexed page number, return the content of the page.
    *
-   * <p>
-   * This is the intended main entry point to this class.
-   * </p>
+   * <p>This is the intended main entry point to this class.
    *
    * @param doc the document to process.
    * @param page the 0-indexed page number
    * @return the {@link PageContent}
    * @throws IOException if an error occurs during parsing (which could be due to badly encoded
-   *         {@link PDFont} data).
+   *     {@link PDFont} data).
    */
   public PageContent processPage(PDDocument doc, int page) throws IOException {
     textPositions = new ArrayList<>();
@@ -95,15 +86,23 @@ public class PdfStripper extends PDFGraphicsStreamEngine {
   }
 
   @Override
-  protected void showFontGlyph(Matrix textRenderingMatrix, PDFont font, int code, String unicode,
-      Vector displacement) {
+  protected void showFontGlyph(
+      Matrix textRenderingMatrix, PDFont font, int code, String unicode, Vector displacement) {
     if (unicode == null) {
       return;
     }
     PDGraphicsState graphicsState = getGraphicsState();
     Text positionedStyledText =
-        characterExtractor.calculateStyleAndPosition(getCurrentPage(), textRenderingMatrix,
-            getTextMatrix(), font, code, unicode, displacement, graphicsState, lastText == null);
+        characterExtractor.calculateStyleAndPosition(
+            getCurrentPage(),
+            textRenderingMatrix,
+            getTextMatrix(),
+            font,
+            code,
+            unicode,
+            displacement,
+            graphicsState,
+            lastText == null);
     lastText = positionedStyledText;
     currentTexts.add(positionedStyledText);
   }
@@ -218,7 +217,6 @@ public class PdfStripper extends PDFGraphicsStreamEngine {
     currentPoint = newPoint;
   }
 
-
   @Override
   public Point2D getCurrentPoint() throws IOException {
     return currentPoint;
@@ -253,5 +251,4 @@ public class PdfStripper extends PDFGraphicsStreamEngine {
   public void shadingFill(COSName shadingName) throws IOException {
     // do nothing
   }
-
 }

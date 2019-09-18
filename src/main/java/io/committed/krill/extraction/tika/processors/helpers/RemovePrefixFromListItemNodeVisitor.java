@@ -1,15 +1,12 @@
 package io.committed.krill.extraction.tika.processors.helpers;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.NodeVisitor;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-/**
- * Removes the prefix (eg DOT) from list item.
- */
+/** Removes the prefix (eg DOT) from list item. */
 public final class RemovePrefixFromListItemNodeVisitor implements NodeVisitor {
   private final Collection<String> dots;
 

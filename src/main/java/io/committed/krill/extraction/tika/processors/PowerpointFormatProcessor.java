@@ -6,9 +6,8 @@ import org.jsoup.nodes.Element;
 
 /**
  * Format processor for PowerPoint (PPT/PPTX).
- * <p>
- * The format of the output is as follows.
- * </p>
+ *
+ * <p>The format of the output is as follows.
  *
  * <pre>
  * html
@@ -21,13 +20,13 @@ import org.jsoup.nodes.Element;
  *     - article class=Slide ... repeating
  *     - aside: Often there are final notes at the end
  * </pre>
- * <p>
- * Note that:
- * </p>
+ *
+ * <p>Note that:
+ *
  * <ul>
- * <li>PPTX outputs page number into the notes... if the notes exist
- * <li>PPTX does not have any list items, just paragraphs
- * <li>Neither format has grouping of information by text box
+ *   <li>PPTX outputs page number into the notes... if the notes exist
+ *   <li>PPTX does not have any list items, just paragraphs
+ *   <li>Neither format has grouping of information by text box
  * </ul>
  */
 public class PowerpointFormatProcessor extends AbstractJsoupFormatProcessor {
@@ -74,26 +73,38 @@ public class PowerpointFormatProcessor extends AbstractJsoupFormatProcessor {
       document.select("div.slide-content").tagName("section");
       document.select("div.slide-notes").tagName("aside");
       document.select("div.notes").tagName("aside").removeClass("notes");
-      document.select("div.notes-content").forEach(e -> {
-        e.children().forEach(c -> e.parent().appendChild(c));
-        e.remove();
-      });
+      document
+          .select("div.notes-content")
+          .forEach(
+              e -> {
+                e.children().forEach(c -> e.parent().appendChild(c));
+                e.remove();
+              });
     } else {
       // Missing div.slide way...
 
       // Wrap up the main content
-      document.select("div.slide-content").tagName("section").removeClass("slide-content")
+      document
+          .select("div.slide-content")
+          .tagName("section")
+          .removeClass("slide-content")
           .wrap("<article class=\"Slide\"></article>");
 
       // Add slide-master-content to the article
-      document.select("article.Slide + div.slide-master-content").forEach(e -> {
-        final Element divSlideMasterContent = e.tagName("details");
-        e.previousElementSibling().appendChild(divSlideMasterContent);
-      });
-      document.select("article.Slide + div.slide-notes").forEach(e -> {
-        final Element divSlideNotes = e.tagName("aside");
-        e.previousElementSibling().appendChild(divSlideNotes);
-      });
+      document
+          .select("article.Slide + div.slide-master-content")
+          .forEach(
+              e -> {
+                final Element divSlideMasterContent = e.tagName("details");
+                e.previousElementSibling().appendChild(divSlideMasterContent);
+              });
+      document
+          .select("article.Slide + div.slide-notes")
+          .forEach(
+              e -> {
+                final Element divSlideNotes = e.tagName("aside");
+                e.previousElementSibling().appendChild(divSlideNotes);
+              });
     }
   }
 

@@ -5,9 +5,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
-/**
- * A delegating ContentHandler implementation.
- */
+/** A delegating ContentHandler implementation. */
 public class ContentHandlerDecorator implements ContentHandler {
 
   /** The delegate. */
@@ -16,8 +14,7 @@ public class ContentHandlerDecorator implements ContentHandler {
   /**
    * Instantiates a new content handler decorator.
    *
-   * @param delegate
-   *          the delegate
+   * @param delegate the delegate
    */
   public ContentHandlerDecorator(ContentHandler delegate) {
     this.delegate = delegate;
@@ -78,5 +75,4 @@ public class ContentHandlerDecorator implements ContentHandler {
   public void skippedEntity(String name) throws SAXException {
     delegate.skippedEntity(name);
   }
-
 }

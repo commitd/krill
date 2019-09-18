@@ -13,8 +13,8 @@ public abstract class AbstractTikaSpreadsheetFormatExtractorIT
     super(resourceName);
   }
 
-  public AbstractTikaSpreadsheetFormatExtractorIT(final String resourceName,
-      final boolean generateTestCode) {
+  public AbstractTikaSpreadsheetFormatExtractorIT(
+      final String resourceName, final boolean generateTestCode) {
     super(resourceName, generateTestCode);
   }
 
@@ -47,8 +47,8 @@ public abstract class AbstractTikaSpreadsheetFormatExtractorIT
     return document.select("body > main > article").get(sheet);
   }
 
-  protected void assertCell(final int sheet, final int row, final int col,
-      final String expectedValue) {
+  protected void assertCell(
+      final int sheet, final int row, final int col, final String expectedValue) {
     final String text =
         getSheetTable(sheet).select("tbody > tr").get(row).select("td").get(col).text();
     assertThat(text).isEqualTo(expectedValue);

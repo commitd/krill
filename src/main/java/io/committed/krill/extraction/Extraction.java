@@ -12,5 +12,4 @@ public interface Extraction {
    * @return a {@link String} of the html (html5).
    */
   String getHtml();
-
 }

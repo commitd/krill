@@ -1,8 +1,7 @@
 package io.committed.krill.extraction.tika;
 
-import org.junit.Test;
-
 import io.committed.krill.extraction.tika.helper.AbstractTikaFormatExtractorIT;
+import org.junit.Test;
 
 public class SimpleRedDocxTikaFormatExtractorIT extends AbstractTikaFormatExtractorIT {
 
@@ -12,13 +11,14 @@ public class SimpleRedDocxTikaFormatExtractorIT extends AbstractTikaFormatExtrac
     super(RESOURCE_NAME);
   }
 
-
   @Test
   public void testBody() {
-    assertBody("" + "<main class=\"Document\"> \n" + " <h1>Hello, World!</h1> \n"
-        + " <h1>Saluton, Mondo!</h1> \n" + " <p>Hello, World!</p> \n" + "</main>");
+    assertBody(
+        ""
+            + "<main class=\"Document\"> \n"
+            + " <h1>Hello, World!</h1> \n"
+            + " <h1>Saluton, Mondo!</h1> \n"
+            + " <p>Hello, World!</p> \n"
+            + "</main>");
   }
-
-
-
 }

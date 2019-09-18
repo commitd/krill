@@ -5,7 +5,6 @@ import io.committed.krill.extraction.pdfbox.interpretation.Grid;
 import io.committed.krill.extraction.pdfbox.interpretation.GridExtractor;
 import io.committed.krill.extraction.pdfbox.physical.Line;
 import io.committed.krill.extraction.pdfbox.physical.TextBlock;
-
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,28 +26,31 @@ public class GridTableExtractor implements TableExtractor {
     Collection<Grid> grids = gridExtractor.findGrids(lines);
     Collection<TableBlock> blocks = new ArrayList<>();
 
-    grids.forEach(grid -> {
-      List<TableRow> rows = new ArrayList<>();
-      grid.getRows().forEach(row -> {
-        List<TextBlock> cells = new ArrayList<>();
-        row.getCells().forEach(cell -> {
-          TableCell tableCell = makeTableCell(lineCandidates, cell);
-          cells.add(tableCell);
+    grids.forEach(
+        grid -> {
+          List<TableRow> rows = new ArrayList<>();
+          grid.getRows()
+              .forEach(
+                  row -> {
+                    List<TextBlock> cells = new ArrayList<>();
+                    row.getCells()
+                        .forEach(
+                            cell -> {
+                              TableCell tableCell = makeTableCell(lineCandidates, cell);
+                              cells.add(tableCell);
+                            });
+                    rows.add(new TableRow(cells));
+                  });
+          blocks.add(new TableBlock(rows));
         });
-        rows.add(new TableRow(cells));
-      });
-      blocks.add(new TableBlock(rows));
-    });
     return new TableResult(lineCandidates, blocks);
   }
 
   /**
    * Make table cell.
    *
-   * @param lineCandidates
-   *          the line candidates
-   * @param cell
-   *          the cell
+   * @param lineCandidates the line candidates
+   * @param cell the cell
    * @return the table cell
    */
   private TableCell makeTableCell(List<Line> lineCandidates, Cell cell) {
@@ -66,5 +68,4 @@ public class GridTableExtractor implements TableExtractor {
     cellLines.sort(byY.thenComparing(byX));
     return new TableCell(cellLines, cell.getColSpan(), cell.getRowSpan());
   }
-
 }

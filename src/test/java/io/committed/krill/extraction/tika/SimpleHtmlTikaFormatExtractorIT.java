@@ -2,12 +2,10 @@ package io.committed.krill.extraction.tika;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collection;
-
-import org.junit.Test;
-
 import io.committed.krill.extraction.impl.DefaultExtraction;
 import io.committed.krill.extraction.tika.helper.AbstractTikaFormatExtractorIT;
+import java.util.Collection;
+import org.junit.Test;
 
 public class SimpleHtmlTikaFormatExtractorIT extends AbstractTikaFormatExtractorIT {
 
@@ -19,8 +17,12 @@ public class SimpleHtmlTikaFormatExtractorIT extends AbstractTikaFormatExtractor
 
   @Test
   public void testBody() {
-    assertBody("" + "<main class=\"Document\"> \n" + " <h1>Hello, World!</h1> \n"
-        + " <p>Hello, World!</p> \n" + "</main>");
+    assertBody(
+        ""
+            + "<main class=\"Document\"> \n"
+            + " <h1>Hello, World!</h1> \n"
+            + " <p>Hello, World!</p> \n"
+            + "</main>");
   }
 
   @Test
@@ -35,5 +37,4 @@ public class SimpleHtmlTikaFormatExtractorIT extends AbstractTikaFormatExtractor
         ((DefaultExtraction) extraction).getMetadata().get("example");
     assertThat(collection).contains("test");
   }
-
 }

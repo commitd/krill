@@ -2,6 +2,8 @@ package io.committed.krill.extraction.pdfbox;
 
 import static org.junit.Assert.assertEquals;
 
+import io.committed.krill.extraction.pdfbox.physical.Text;
+import io.committed.krill.extraction.pdfbox.text.CharacterExtractor;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -11,9 +13,6 @@ import org.apache.pdfbox.util.Matrix;
 import org.apache.pdfbox.util.Vector;
 import org.junit.Before;
 import org.junit.Test;
-
-import io.committed.krill.extraction.pdfbox.physical.Text;
-import io.committed.krill.extraction.pdfbox.text.CharacterExtractor;
 
 public class CharacterExtractorTextTest {
   private Vector displacement;
@@ -35,9 +34,9 @@ public class CharacterExtractorTextTest {
   @Test
   public void testSpace() {
     PDFont font = PDType1Font.COURIER;
-    Text position = characterExtractor.calculateStyleAndPosition(page, new Matrix(), new Matrix(),
-        font, 33, " ", displacement, graphicsState, false);
+    Text position =
+        characterExtractor.calculateStyleAndPosition(
+            page, new Matrix(), new Matrix(), font, 33, " ", displacement, graphicsState, false);
     assertEquals(" ", position.toString());
   }
-
 }

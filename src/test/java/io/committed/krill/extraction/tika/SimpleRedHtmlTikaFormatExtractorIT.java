@@ -1,8 +1,7 @@
 package io.committed.krill.extraction.tika;
 
-import org.junit.Test;
-
 import io.committed.krill.extraction.tika.helper.AbstractTikaFormatExtractorIT;
+import org.junit.Test;
 
 public class SimpleRedHtmlTikaFormatExtractorIT extends AbstractTikaFormatExtractorIT {
 
@@ -14,8 +13,12 @@ public class SimpleRedHtmlTikaFormatExtractorIT extends AbstractTikaFormatExtrac
 
   @Test
   public void testBody() {
-    assertBody("" + "<main class=\"Document\"> \n" + " <h1>Hello, World!</h1> \n"
-        + " <h1 class=\"red\">Saluton, mondo!</h1> \n" + " <p>Hello, World!</p> \n" + "</main>");
+    assertBody(
+        ""
+            + "<main class=\"Document\"> \n"
+            + " <h1>Hello, World!</h1> \n"
+            + " <h1 class=\"red\">Saluton, mondo!</h1> \n"
+            + " <p>Hello, World!</p> \n"
+            + "</main>");
   }
-
 }

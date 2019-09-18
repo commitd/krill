@@ -5,8 +5,6 @@ import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
-import io.committed.krill.extraction.pdfbox.physical.Style;
-
 public class StyleTest {
 
   @Test
@@ -77,5 +75,4 @@ public class StyleTest {
     assertNotEquals(style1, style3);
     assertNotEquals(style3, style1);
   }
-
 }

@@ -1,7 +1,13 @@
 package io.committed.krill.extraction.tika.parsers;
 
 import com.google.common.base.Strings;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.tika.config.ServiceLoader;
@@ -26,28 +32,17 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Jsoup based HTML parser for Tika.
- * <p>
- * Tika has a HTML parser but it seems to a lot of features in particular robustness to poor input,
- * support for cleaning the document and support for HTML5 types.
- * </p>
- * <p>
- * This is a simple implementation based on the JSoup, Tika uses TagSoup by default (which seems to
- * lack the HTML5 tags such as a header which are important to us).
- * </p>
- * <p>
- * Note this implementation does not actually remove questionable content from the HTML, but the
+ *
+ * <p>Tika has a HTML parser but it seems to a lot of features in particular robustness to poor
+ * input, support for cleaning the document and support for HTML5 types.
+ *
+ * <p>This is a simple implementation based on the JSoup, Tika uses TagSoup by default (which seems
+ * to lack the HTML5 tags such as a header which are important to us).
+ *
+ * <p>Note this implementation does not actually remove questionable content from the HTML, but the
  * clean() method can be implemented to do so.
- * </p>
  */
 public class JSoupHtmlParser extends AbstractParser {
 
@@ -57,9 +52,10 @@ public class JSoupHtmlParser extends AbstractParser {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Set<MediaType> SUPPORTED_TYPES = Collections
-      .unmodifiableSet(new HashSet<MediaType>(
-          Arrays.asList(MediaType.text("html"), MediaType.application("xhtml+xml"))));
+  private static final Set<MediaType> SUPPORTED_TYPES =
+      Collections.unmodifiableSet(
+          new HashSet<MediaType>(
+              Arrays.asList(MediaType.text("html"), MediaType.application("xhtml+xml"))));
 
   private static final ServiceLoader LOADER = new ServiceLoader(HtmlParser.class.getClassLoader());
 
@@ -69,12 +65,19 @@ public class JSoupHtmlParser extends AbstractParser {
   }
 
   @Override
-  public void parse(final InputStream stream, final ContentHandler handler, final Metadata metadata,
-      final ParseContext parseContext) throws IOException, SAXException, TikaException {
+  public void parse(
+      final InputStream stream,
+      final ContentHandler handler,
+      final Metadata metadata,
+      final ParseContext parseContext)
+      throws IOException, SAXException, TikaException {
 
     // Copied from Tika HTML Parser
-    try (AutoDetectReader reader = new AutoDetectReader(new CloseShieldInputStream(stream),
-        metadata, parseContext.get(ServiceLoader.class, LOADER))) {
+    try (AutoDetectReader reader =
+        new AutoDetectReader(
+            new CloseShieldInputStream(stream),
+            metadata,
+            parseContext.get(ServiceLoader.class, LOADER))) {
       final Charset charset = reader.getCharset();
       final String previous = metadata.get(Metadata.CONTENT_TYPE);
       MediaType contentType = null;
@@ -89,24 +92,35 @@ public class JSoupHtmlParser extends AbstractParser {
       // deprecated, see TIKA-431
       metadata.set(Metadata.CONTENT_ENCODING, charset.name());
 
-      process(new ReaderInputStream(reader, reader.getCharset().name()), reader.getCharset().name(),
-          handler, metadata);
+      process(
+          new ReaderInputStream(reader, reader.getCharset().name()),
+          reader.getCharset().name(),
+          handler,
+          metadata);
     }
   }
 
-  private void process(final InputStream stream, final String charset, final ContentHandler handler,
-      final Metadata metadata) throws IOException, SAXException {
+  private void process(
+      final InputStream stream,
+      final String charset,
+      final ContentHandler handler,
+      final Metadata metadata)
+      throws IOException, SAXException {
 
     final Document document = Jsoup.parse(stream, charset, "");
     clean(document);
 
-    document.head().select("meta").forEach(m -> {
-      final String name = m.attr("name");
-      final String value = m.attr("content");
-      if (!Strings.isNullOrEmpty(name)) {
-        metadata.add(name, value);
-      }
-    });
+    document
+        .head()
+        .select("meta")
+        .forEach(
+            m -> {
+              final String name = m.attr("name");
+              final String value = m.attr("content");
+              if (!Strings.isNullOrEmpty(name)) {
+                metadata.add(name, value);
+              }
+            });
 
     document.traverse(new JsoupToSaxVisitor(handler));
   }
@@ -114,8 +128,7 @@ public class JSoupHtmlParser extends AbstractParser {
   /**
    * Subclasses may wish to strip code here, apply JSoup {@link Whitelist} cleaners, etc...
    *
-   * @param document
-   *          the document to clean.
+   * @param document the document to clean.
    */
   protected void clean(final Document document) {
     // do nothing
@@ -166,6 +179,5 @@ public class JSoupHtmlParser extends AbstractParser {
         LOGGER.warn("Fail to close tag", e);
       }
     }
-
   }
 }

@@ -1,8 +1,6 @@
 package io.committed.krill.extraction.exception;
 
-/**
- * A superclass for exceptions thrown by format extraction.
- */
+/** A superclass for exceptions thrown by format extraction. */
 public class ExtractionException extends Exception {
 
   private static final long serialVersionUID = 1L;
@@ -16,5 +14,4 @@ public class ExtractionException extends Exception {
   public ExtractionException(String message, Throwable cause) {
     super(message, cause);
   }
-
 }

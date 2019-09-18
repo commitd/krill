@@ -8,9 +8,8 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Convert Newlines to BR tags when in the Body element.
- * <p>
- * Useful to wrapping Tika parsers which output some HTML tags but still use newlines.
- * </p>
+ *
+ * <p>Useful to wrapping Tika parsers which output some HTML tags but still use newlines.
  */
 public class NewlineToBrContentHandler extends ContentHandlerDecorator {
 
@@ -20,16 +19,16 @@ public class NewlineToBrContentHandler extends ContentHandlerDecorator {
   /**
    * Newline to BR content handler.
    *
-   * @param handler
-   *          the handler
+   * @param handler the handler
    */
   public NewlineToBrContentHandler(final ContentHandler handler) {
     super(handler);
   }
 
   @Override
-  public void startElement(final String uri, final String localName, final String name,
-      final Attributes atts) throws SAXException {
+  public void startElement(
+      final String uri, final String localName, final String name, final Attributes atts)
+      throws SAXException {
     if (localName.equalsIgnoreCase("body")) {
       inBody = true;
     }
@@ -66,7 +65,6 @@ public class NewlineToBrContentHandler extends ContentHandlerDecorator {
 
         // Start at the end element...(so we get a newline after the br)
         startIndex = index;
-
       }
     }
 

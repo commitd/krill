@@ -6,10 +6,9 @@ import org.jsoup.nodes.Document;
 
 /**
  * Format processor for Excel (XLS/XSLX) files.
- * <p>
- * Cleans up CSS classes and standardises on the output below. The HTML structure of a spreadsheet
- * is standardised as follows:
- * </p>
+ *
+ * <p>Cleans up CSS classes and standardises on the output below. The HTML structure of a
+ * spreadsheet is standardised as follows:
  *
  * <pre>
  *   html
@@ -24,19 +23,17 @@ import org.jsoup.nodes.Document;
  *       - article class=Sheet (being sheet 2)
  * </pre>
  *
- * <p>
- * Note:
- * </p>
+ * <p>Note:
  *
  * <ul>
- * <li>DOCX does not support section for floating text. It will be output as p tags.</li>
+ *   <li>DOCX does not support section for floating text. It will be output as p tags.
  * </ul>
  */
 public class ExcelFormatProcessor extends AbstractJsoupFormatProcessor {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * io.committed.krill.extraction.tika.processors.AbstractJsoupFormatProcessor#process(org.apache.
    * tika.metadata.Metadata, org.jsoup.nodes.Document)
@@ -56,20 +53,21 @@ public class ExcelFormatProcessor extends AbstractJsoupFormatProcessor {
     // Wrap the sheets as a div
     document.select("div,div.page").tagName("article").attr("class", "Sheet");
 
-
     // Delete any empty p
     document.select("article > p:empty").remove();
 
     // For whatever reason floating text is outside a p tag, so add one back in.
-    document.select("article:matchText").forEach(e -> {
-      String text = e.text();
-      if(!text.isEmpty() && !StringUtils.isBlank(text)) {
-        e.wrap("<section></section>");
-      }
-    });
+    document
+        .select("article:matchText")
+        .forEach(
+            e -> {
+              String text = e.text();
+              if (!text.isEmpty() && !StringUtils.isBlank(text)) {
+                e.wrap("<section></section>");
+              }
+            });
     document.select("article > section:empty").remove();
 
     return document;
   }
-
 }

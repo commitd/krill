@@ -1,5 +1,7 @@
 package io.committed.krill.extraction.pdfbox.text;
 
+import io.committed.krill.extraction.pdfbox.physical.Line;
+import io.committed.krill.extraction.pdfbox.physical.TextBlock;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,19 +13,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import io.committed.krill.extraction.pdfbox.physical.Line;
-import io.committed.krill.extraction.pdfbox.physical.TextBlock;
-
 /**
  * A simple heuristic {@link TableExtractor}.
- * <p>
- * First potential tables are found by looking for lines that contain more than one line fragment on
- * the same baseline.
- * </p>
- * <p>
- * These line fragments are then assigned columns, and grids of at least 2x2 are put into
- * {@link TableBlock}s.
- * </p>
+ *
+ * <p>First potential tables are found by looking for lines that contain more than one line fragment
+ * on the same baseline.
+ *
+ * <p>These line fragments are then assigned columns, and grids of at least 2x2 are put into {@link
+ * TableBlock}s.
  */
 public class SimpleTableExtractor implements TableExtractor {
 
@@ -37,7 +34,6 @@ public class SimpleTableExtractor implements TableExtractor {
   public SimpleTableExtractor(boolean ignoreTerseTables) {
     this.ignoreTerseTables = ignoreTerseTables;
   }
-
 
   @Override
   public TableResult findTables(List<Line> lineCandidates, Collection<Line2D> lines) {
@@ -112,8 +108,9 @@ public class SimpleTableExtractor implements TableExtractor {
       Line[] cellLines = grid[i];
       List<TextBlock> cells = new ArrayList<>();
       for (Line line : cellLines) {
-        cells.add(new TextBlock(
-            line == null ? Collections.emptyList() : Collections.singletonList(line)));
+        cells.add(
+            new TextBlock(
+                line == null ? Collections.emptyList() : Collections.singletonList(line)));
       }
       rows.add(new TableRow(cells));
     }
@@ -137,8 +134,11 @@ public class SimpleTableExtractor implements TableExtractor {
       List<TextBlock> contents = tableRow.getContents();
       int terseCells = 0;
       for (TextBlock textBlock : contents) {
-        if (textBlock.getContents().stream().filter(Objects::nonNull)
-            .flatMap(f -> f.getContents().stream()).count() > 1) {
+        if (textBlock.getContents().stream()
+                .filter(Objects::nonNull)
+                .flatMap(f -> f.getContents().stream())
+                .count()
+            > 1) {
           terseCells++;
         }
       }
@@ -240,9 +240,7 @@ public class SimpleTableExtractor implements TableExtractor {
     return linesByBaseLine;
   }
 
-  /**
-   * The Class Column.
-   */
+  /** The Class Column. */
   private static class Column {
 
     /** The lines. */
@@ -254,7 +252,9 @@ public class SimpleTableExtractor implements TableExtractor {
      * @return the min X
      */
     private double getMinX() {
-      return lines.values().stream().mapToDouble(l -> l.getPosition().getMinX()).min()
+      return lines.values().stream()
+          .mapToDouble(l -> l.getPosition().getMinX())
+          .min()
           .getAsDouble();
     }
 
@@ -264,23 +264,21 @@ public class SimpleTableExtractor implements TableExtractor {
      * @return the max X
      */
     private double getMaxX() {
-      return lines.values().stream().mapToDouble(l -> l.getPosition().getMaxX()).max()
+      return lines.values().stream()
+          .mapToDouble(l -> l.getPosition().getMaxX())
+          .max()
           .getAsDouble();
     }
   }
 
-  /**
-   * The Class LinesWithCommonBaseline.
-   */
+  /** The Class LinesWithCommonBaseline. */
   private static class LinesWithCommonBaseline {
 
     /** The lines. */
     private final Collection<Line> lines = new ArrayList<>();
   }
 
-  /**
-   * The Class TableCandidateResult.
-   */
+  /** The Class TableCandidateResult. */
   private static class TableCandidateResult {
 
     /** The table candidates. */
@@ -290,9 +288,7 @@ public class SimpleTableExtractor implements TableExtractor {
     private final Collection<Line> discardedLines = new ArrayList<>();
   }
 
-  /**
-   * The Class TableCandidate.
-   */
+  /** The Class TableCandidate. */
   private static class TableCandidate {
 
     /** The lines. */

@@ -10,14 +10,10 @@ import java.util.stream.Collectors;
 
 /**
  * A {@link PositionedContainer} for {@link Styled} content.
- * <p>
- * The style for the container is the most common style found in the content.
- * </p>
  *
- * @param <T>
- *          the content type, which must implement {@link Positioned} and {@link Styled}.
+ * <p>The style for the container is the most common style found in the content.
  *
- *
+ * @param <T> the content type, which must implement {@link Positioned} and {@link Styled}.
  */
 public class PositionedStyledContainer<T extends Positioned & Styled> extends PositionedContainer<T>
     implements Styled {
@@ -28,8 +24,7 @@ public class PositionedStyledContainer<T extends Positioned & Styled> extends Po
   /**
    * Creates a new {@link PositionedStyledContainer} for the given contennt.
    *
-   * @param content
-   *          the content.
+   * @param content the content.
    */
   public PositionedStyledContainer(List<T> content) {
     super(content);
@@ -46,10 +41,12 @@ public class PositionedStyledContainer<T extends Positioned & Styled> extends Po
       return null;
     }
 
-    Map<Style, Long> styleCounts = getContents().stream().filter(Objects::nonNull)
-        .collect(Collectors.groupingBy(s -> s.getStyle(), Collectors.counting()));
-    Optional<Entry<Style, Long>> max = styleCounts.entrySet().stream()
-        .max(Comparator.comparingLong(Entry::getValue));
+    Map<Style, Long> styleCounts =
+        getContents().stream()
+            .filter(Objects::nonNull)
+            .collect(Collectors.groupingBy(s -> s.getStyle(), Collectors.counting()));
+    Optional<Entry<Style, Long>> max =
+        styleCounts.entrySet().stream().max(Comparator.comparingLong(Entry::getValue));
     if (max.isPresent()) {
       return max.get().getKey();
     }

@@ -12,18 +12,15 @@ import io.committed.krill.extraction.pdfbox.physical.Word;
 import io.committed.krill.extraction.pdfbox.text.TableBlock;
 import io.committed.krill.extraction.pdfbox.text.TableCell;
 import io.committed.krill.extraction.pdfbox.text.TableRow;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
-/**
- * A helper class for emitting identified blocks from a PDF.
- */
+/** A helper class for emitting identified blocks from a PDF. */
 public class BlockContentHandler extends SimpleXhtmlContentHandler {
 
   /** The Constant HEADER. */
@@ -38,10 +35,8 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Instantiates a new block content handler.
    *
-   * @param delegate
-   *          the delegate
-   * @param emitAbsolutionPositioning
-   *          the emit absolution positioning
+   * @param delegate the delegate
+   * @param emitAbsolutionPositioning the emit absolution positioning
    */
   public BlockContentHandler(ContentHandler delegate, boolean emitAbsolutionPositioning) {
     super(delegate);
@@ -51,10 +46,8 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Emit the given blocks, wrapped in a "header" tag.
    *
-   * @param headerBlocks
-   *          the blocks for the header section.
-   * @throws SAXException
-   *           if an error occurs generating SAX events.
+   * @param headerBlocks the blocks for the header section.
+   * @throws SAXException if an error occurs generating SAX events.
    */
   public void emitPageHeader(List<LabellablePositioned> headerBlocks) throws SAXException {
     if (headerBlocks.isEmpty()) {
@@ -68,10 +61,8 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Emit the given blocks, wrapped in a "footer" tag.
    *
-   * @param footerBlocks
-   *          the blocks for the footer section.
-   * @throws SAXException
-   *           if an error occurs generating SAX events.
+   * @param footerBlocks the blocks for the footer section.
+   * @throws SAXException if an error occurs generating SAX events.
    */
   public void emitPageFooter(List<LabellablePositioned> footerBlocks) throws SAXException {
     if (footerBlocks.isEmpty()) {
@@ -85,12 +76,9 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Emit the given blocks.
    *
-   * @param pageBlocks
-   *          the blocks to emit, with special handling for {@link TextBlock}, {@link ImageBlock}
-   *          and {@link TableBlock}.
-   *
-   * @throws SAXException
-   *           if an error occurs generating SAX events.
+   * @param pageBlocks the blocks to emit, with special handling for {@link TextBlock}, {@link
+   *     ImageBlock} and {@link TableBlock}.
+   * @throws SAXException if an error occurs generating SAX events.
    */
   public void emitBlocks(List<LabellablePositioned> pageBlocks) throws SAXException {
     for (LabellablePositioned block : pageBlocks) {
@@ -107,10 +95,8 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Emit Image block.
    *
-   * @param imageBlock
-   *          the image block
-   * @throws SAXException
-   *           the SAX exception
+   * @param imageBlock the image block
+   * @throws SAXException the SAX exception
    */
   private void emitBlock(ImageBlock imageBlock) throws SAXException {
     startElement("img", imageBlock);
@@ -120,10 +106,8 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Emit Table block.
    *
-   * @param tableBlock
-   *          the table block
-   * @throws SAXException
-   *           the SAX exception
+   * @param tableBlock the table block
+   * @throws SAXException the SAX exception
    */
   private void emitBlock(TableBlock tableBlock) throws SAXException {
     startElement("table", tableBlock);
@@ -146,10 +130,8 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Emit Text block.
    *
-   * @param textBlock
-   *          the text block
-   * @throws SAXException
-   *           the SAX exception
+   * @param textBlock the text block
+   * @throws SAXException the SAX exception
    */
   private void emitBlock(TextBlock textBlock) throws SAXException {
     String tag = getTag(textBlock);
@@ -214,7 +196,6 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
           curUnderline = cr.isUnderlined();
         }
         characters(word.toString());
-
       }
       if (curUnderline) {
         endElement("u");
@@ -236,8 +217,7 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Gets the tag.
    *
-   * @param textBlock
-   *          the text block
+   * @param textBlock the text block
    * @return the tag
    */
   private String getTag(TextBlock textBlock) {
@@ -251,12 +231,9 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Start element.
    *
-   * @param element
-   *          the element
-   * @param block
-   *          the block
-   * @throws SAXException
-   *           the SAX exception
+   * @param element the element
+   * @param block the block
+   * @throws SAXException the SAX exception
    */
   private void startElement(String element, LabellablePositioned block) throws SAXException {
     List<String> attributes = new ArrayList<>();
@@ -299,8 +276,7 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Make class label.
    *
-   * @param block
-   *          the block
+   * @param block the block
    * @return the string
    */
   private static String makeLabel(LabellablePositioned block) {
@@ -311,8 +287,7 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Make position style attribute.
    *
-   * @param location
-   *          the location
+   * @param location the location
    * @return the string
    */
   private static String makePosition(Positioned location) {
@@ -336,8 +311,7 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Make font style attribute.
    *
-   * @param block
-   *          the block
+   * @param block the block
    * @return the string
    */
   private static String makeFontStyle(Styled block) {
@@ -364,8 +338,7 @@ public class BlockContentHandler extends SimpleXhtmlContentHandler {
   /**
    * Make class attribute.
    *
-   * @param block
-   *          the block
+   * @param block the block
    * @return the string
    */
   private static String makeClass(LabellablePositioned block) {

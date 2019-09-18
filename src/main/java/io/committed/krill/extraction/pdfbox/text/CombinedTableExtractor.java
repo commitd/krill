@@ -1,16 +1,15 @@
 package io.committed.krill.extraction.pdfbox.text;
 
+import io.committed.krill.extraction.pdfbox.physical.Line;
+import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import io.committed.krill.extraction.pdfbox.physical.Line;
-import io.committed.krill.extraction.tika.pdf.PdfParserConfig;
-
 /**
- * A TableExtractor that uses the {@link GridTableExtractor} followed by the
- * {@link SimpleTableExtractor}.
+ * A TableExtractor that uses the {@link GridTableExtractor} followed by the {@link
+ * SimpleTableExtractor}.
  */
 public class CombinedTableExtractor implements TableExtractor {
 
@@ -18,7 +17,6 @@ public class CombinedTableExtractor implements TableExtractor {
 
   public CombinedTableExtractor(PdfParserConfig parserConfig) {
     this.parserConfig = parserConfig;
-
   }
 
   @Override
@@ -30,14 +28,12 @@ public class CombinedTableExtractor implements TableExtractor {
       TableResult gridTables = extractor.findTables(remainingLines, lines);
       tables.addAll(gridTables.getTableBlocks());
       remainingLines = gridTables.getRemainingLines();
-
     }
     if (!parserConfig.isDisableSimpleTableExtraction()) {
       TableExtractor extractor = new SimpleTableExtractor(parserConfig.isIgnoreTerseTables());
       TableResult simpleTables = extractor.findTables(remainingLines, lines);
       tables.addAll(simpleTables.getTableBlocks());
       remainingLines = simpleTables.getRemainingLines();
-
     }
     return new TableResult(remainingLines, tables);
   }

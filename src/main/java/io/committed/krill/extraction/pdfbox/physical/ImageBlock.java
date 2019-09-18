@@ -2,14 +2,11 @@ package io.committed.krill.extraction.pdfbox.physical;
 
 import io.committed.krill.extraction.pdfbox.interpretation.BlockTypeLabel;
 import io.committed.krill.extraction.pdfbox.interpretation.LabellablePositioned;
-
 import java.awt.geom.Rectangle2D;
 import java.util.EnumSet;
 import java.util.Set;
 
-/**
- * Represents the location of an image in a page (does not contain the image).
- */
+/** Represents the location of an image in a page (does not contain the image). */
 public class ImageBlock implements LabellablePositioned {
 
   /** The position. */
@@ -21,8 +18,7 @@ public class ImageBlock implements LabellablePositioned {
   /**
    * Create a new {@link ImageBlock} at the given position.
    *
-   * @param position
-   *          the position.
+   * @param position the position.
    */
   public ImageBlock(Rectangle2D position) {
     this.position = position;
@@ -45,5 +41,4 @@ public class ImageBlock implements LabellablePositioned {
       labels.remove(BlockTypeLabel.UNKNOWN);
     }
   }
-
 }

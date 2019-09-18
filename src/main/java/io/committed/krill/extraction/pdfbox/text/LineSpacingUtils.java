@@ -2,7 +2,6 @@ package io.committed.krill.extraction.pdfbox.text;
 
 import io.committed.krill.extraction.pdfbox.physical.Baselined;
 import io.committed.krill.extraction.pdfbox.physical.Line;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,18 +9,14 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Utility functions to help with spatial analysis of {@link Line}s.
- */
+/** Utility functions to help with spatial analysis of {@link Line}s. */
 public class LineSpacingUtils {
 
   /** The Constant BASELINE_COMPARATOR. */
-  private static final Comparator<Line> BASELINE_COMPARATOR = Comparator
-      .comparing(Line::getBaseline).thenComparing(s -> s.getPosition().getMinX());
+  private static final Comparator<Line> BASELINE_COMPARATOR =
+      Comparator.comparing(Line::getBaseline).thenComparing(s -> s.getPosition().getMinX());
 
-  /**
-   * Instantiates a new line spacing utils.
-   */
+  /** Instantiates a new line spacing utils. */
   private LineSpacingUtils() {
     // no easy construction
   }
@@ -29,8 +24,7 @@ public class LineSpacingUtils {
   /**
    * Sort by baseline.
    *
-   * @param baselined
-   *          the baselined
+   * @param baselined the baselined
    * @return the list
    */
   static List<Line> sortByBaseline(Collection<Line> baselined) {
@@ -42,8 +36,7 @@ public class LineSpacingUtils {
   /**
    * Most frequent baseline spacing.
    *
-   * @param sorted
-   *          the sorted
+   * @param sorted the sorted
    * @return the int
    */
   static int mostFrequentBaselineSpacing(List<Line> sorted) {
@@ -63,8 +56,7 @@ public class LineSpacingUtils {
   /**
    * Gather line spacings.
    *
-   * @param lines
-   *          the lines
+   * @param lines the lines
    * @return the int[]
    */
   private static int[] gatherLineSpacings(List<Line> lines) {
@@ -85,10 +77,8 @@ public class LineSpacingUtils {
   /**
    * Creates the spacings.
    *
-   * @param <T>
-   *          the generic type
-   * @param lines
-   *          the lines
+   * @param <T> the generic type
+   * @param lines the lines
    * @return the int[]
    */
   private static <T extends Baselined> int[] createSpacings(List<T> lines) {
@@ -110,12 +100,9 @@ public class LineSpacingUtils {
   /**
    * Gets the spacing.
    *
-   * @param <T>
-   *          the generic type
-   * @param previous
-   *          the previous
-   * @param current
-   *          the current
+   * @param <T> the generic type
+   * @param previous the previous
+   * @param current the current
    * @return the spacing
    */
   private static <T extends Baselined> int getSpacing(T previous, T current) {

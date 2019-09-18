@@ -2,13 +2,10 @@ package io.committed.krill.extraction.tika;
 
 import io.committed.krill.extraction.exception.ExtractionException;
 import io.committed.krill.extraction.support.test.ThrowOnReadInputStream;
-import io.committed.krill.extraction.tika.TikaFormatExtractor;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.io.InputStream;
+import org.junit.Before;
+import org.junit.Test;
 
 public class InvalidDataTikaFormatExtractorIT {
 
@@ -25,5 +22,4 @@ public class InvalidDataTikaFormatExtractorIT {
       formatExtractor.parse(inputStream, "source");
     }
   }
-
 }

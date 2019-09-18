@@ -9,16 +9,15 @@ import org.jsoup.nodes.Document;
 
 /**
  * Format processor for HTML.
- * <p>
- * Wraps a HTML document as it it where a DOC/DOC see {@link WordFormatProcessor} for the structure.
- * </p>
- * <p>
- * Also converts textarea to pre, in case additional data is stored in that tag.
- * </p>
- * <p>
- * Note that the majority of clean up of of HTML has already occured in {@link XHTMLContentHandler},
- * {@link NoHeadTagInBodyContentHandler}, {@link ToHTMLContentHandler} and {@link JSoupHtmlParser}.
- * </p>
+ *
+ * <p>Wraps a HTML document as it it where a DOC/DOC see {@link WordFormatProcessor} for the
+ * structure.
+ *
+ * <p>Also converts textarea to pre, in case additional data is stored in that tag.
+ *
+ * <p>Note that the majority of clean up of of HTML has already occured in {@link
+ * XHTMLContentHandler}, {@link NoHeadTagInBodyContentHandler}, {@link ToHTMLContentHandler} and
+ * {@link JSoupHtmlParser}.
  */
 public class HtmlFormatProcessor extends AbstractJsoupFormatProcessor {
 
@@ -40,11 +39,15 @@ public class HtmlFormatProcessor extends AbstractJsoupFormatProcessor {
     document.select("textarea").tagName("pre");
 
     // Remove (what was) &nbsp; from any doc, replacing with a standard space
-    document.select("*").forEach(e -> {
-      if (e.ownText().equalsIgnoreCase("&amp;nbsp;") || e.ownText().equalsIgnoreCase("&nbsp;")) {
-        e.text(" ");
-      }
-    });
+    document
+        .select("*")
+        .forEach(
+            e -> {
+              if (e.ownText().equalsIgnoreCase("&amp;nbsp;")
+                  || e.ownText().equalsIgnoreCase("&nbsp;")) {
+                e.text(" ");
+              }
+            });
 
     return document;
   }

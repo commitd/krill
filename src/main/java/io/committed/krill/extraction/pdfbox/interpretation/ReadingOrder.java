@@ -13,10 +13,8 @@ public interface ReadingOrder {
   /**
    * Order the given collection of blocks into a {@link List}.
    *
-   * @param blocks
-   *          the {@link Collection} of blocks to order
+   * @param blocks the {@link Collection} of blocks to order
    * @return an ordered {@link List} of blocks, in reading order.
    */
   List<LabellablePositioned> order(Collection<LabellablePositioned> blocks);
-
 }

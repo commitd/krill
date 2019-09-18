@@ -1,7 +1,18 @@
 package io.committed.krill.extraction.tika.parsers;
 
 import com.google.common.collect.Sets;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -17,34 +28,17 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 /**
  * Tika compliant parser for CSV.
- * <p>
- * This CSV parser auto detects TSV / CSV (and other common separators).
- * </p>
- * <p>
- * It is a standard Tika Parser and thus sits within the Tika pipeline and outputs a HTML (table)
+ *
+ * <p>This CSV parser auto detects TSV / CSV (and other common separators).
+ *
+ * <p>It is a standard Tika Parser and thus sits within the Tika pipeline and outputs a HTML (table)
  * representation of the CSV.
- * </p>
  */
 public class CsvParser implements Parser {
 
-  /**
-   * Comparator for header ordering.
-   */
+  /** Comparator for header ordering. */
   private static class HeaderOrderComparator
       implements Comparator<Map.Entry<String, Integer>>, Serializable {
 
@@ -56,7 +50,7 @@ public class CsvParser implements Parser {
     }
   }
 
-  private static final char[] COMMON_DELIMITERS = { ',', '\t', '|', '~', '\\', '/' };
+  private static final char[] COMMON_DELIMITERS = {',', '\t', '|', '~', '\\', '/'};
 
   private static final AttributesImpl EMPTY_ATTRIBUTES = new AttributesImpl();
 
@@ -73,8 +67,12 @@ public class CsvParser implements Parser {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void parse(final InputStream stream, final ContentHandler handler, final Metadata metadata,
-      final ParseContext context) throws IOException, SAXException, TikaException {
+  public void parse(
+      final InputStream stream,
+      final ContentHandler handler,
+      final Metadata metadata,
+      final ParseContext context)
+      throws IOException, SAXException, TikaException {
 
     try (Reader reader = new AutoDetectReader(stream)) {
       handler.startDocument();
@@ -92,14 +90,10 @@ public class CsvParser implements Parser {
   /**
    * Output the table (the entire CSV) to the content handler
    *
-   * @param handler
-   *          the handler
-   * @param reader
-   *          the reader
-   * @throws SAXException
-   *           the SAX exception
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param handler the handler
+   * @param reader the reader
+   * @throws SAXException the SAX exception
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   private void handleTable(final ContentHandler handler, final Reader reader)
       throws SAXException, IOException {
@@ -118,20 +112,17 @@ public class CsvParser implements Parser {
   /**
    * Output a header row to the content handler.
    *
-   * @param parser
-   *          the parser
-   * @param handler
-   *          the handler
-   * @throws SAXException
-   *           the SAX exception
+   * @param parser the parser
+   * @param handler the handler
+   * @throws SAXException the SAX exception
    */
   private void handleHeaderRow(final CSVParser parser, final ContentHandler handler)
       throws SAXException {
     if (parser.getHeaderMap() == null || parser.getHeaderMap().size() == 0) {
       return;
     }
-    final ArrayList<Entry<String, Integer>> headers = new ArrayList<>(
-        parser.getHeaderMap().entrySet());
+    final ArrayList<Entry<String, Integer>> headers =
+        new ArrayList<>(parser.getHeaderMap().entrySet());
     Collections.sort(headers, new HeaderOrderComparator());
     handler.startElement(URI, TR, TR, EMPTY_ATTRIBUTES);
     for (final Entry<String, Integer> column : headers) {
@@ -143,12 +134,9 @@ public class CsvParser implements Parser {
   /**
    * Output a header value to the content handler.
    *
-   * @param column
-   *          the column
-   * @param handler
-   *          the {@link ContentHandler} to emit to
-   * @throws SAXException
-   *           if an error occurs calling the handler.
+   * @param column the column
+   * @param handler the {@link ContentHandler} to emit to
+   * @throws SAXException if an error occurs calling the handler.
    */
   private void handleHeaderColumn(final Entry<String, Integer> column, final ContentHandler handler)
       throws SAXException {
@@ -161,11 +149,9 @@ public class CsvParser implements Parser {
   /**
    * Gets the parser implementation based on analysing the document.
    *
-   * @param document
-   *          the document
+   * @param document the document
    * @return the parser
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   private CSVParser getParser(final String document) throws IOException {
     CSVFormat format = CSVFormat.DEFAULT;
@@ -178,13 +164,10 @@ public class CsvParser implements Parser {
   /**
    * Configure headers.
    *
-   * @param document
-   *          the document
-   * @param format
-   *          the format
+   * @param document the document
+   * @param format the format
    * @return the CSV format
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   private CSVFormat configureHeaders(final String document, final CSVFormat format)
       throws IOException {
@@ -196,16 +179,13 @@ public class CsvParser implements Parser {
 
   /**
    * Attempt to guess the delimiter used betwene fields.
-   * <p>
-   * This method is flawed in the case where string values contain a lot of valid delimiter
+   *
+   * <p>This method is flawed in the case where string values contain a lot of valid delimiter
    * characters (eg comma) in relation to the number of fields. However, this should largely cancel
    * out over multiple lines.
-   * </p>
    *
-   * @param document
-   *          the document
-   * @param format
-   *          the format
+   * @param document the document
+   * @param format the format
    * @return the CSV format
    */
   private CSVFormat configureDelimiter(final String document, final CSVFormat format) {
@@ -229,16 +209,14 @@ public class CsvParser implements Parser {
   /**
    * Guess if a header is in place.
    *
-   * @param format
-   *          the format
-   * @param text
-   *          the text
+   * @param format the format
+   * @param text the text
    * @return true, if successful
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   private boolean hasHeaders(final CSVFormat format, final String text) throws IOException {
-    try (Reader reader = new StringReader(text); CSVParser parser = format.parse(reader)) {
+    try (Reader reader = new StringReader(text);
+        CSVParser parser = format.parse(reader)) {
       final Iterator<CSVRecord> iterator = parser.iterator();
 
       // If there are no rows there can be no header
@@ -259,12 +237,9 @@ public class CsvParser implements Parser {
   /**
    * Output a row to the content handler.
    *
-   * @param record
-   *          the record
-   * @param handler
-   *          the handler
-   * @throws SAXException
-   *           the SAX exception
+   * @param record the record
+   * @param handler the handler
+   * @throws SAXException the SAX exception
    */
   private void handleRow(final CSVRecord record, final ContentHandler handler) throws SAXException {
     handler.startElement(URI, TR, TR, EMPTY_ATTRIBUTES);
@@ -277,12 +252,9 @@ public class CsvParser implements Parser {
   /**
    * Output a single cell to the content handler.
    *
-   * @param column
-   *          the column
-   * @param handler
-   *          the handler
-   * @throws SAXException
-   *           the SAX exception
+   * @param column the column
+   * @param handler the handler
+   * @throws SAXException the SAX exception
    */
   private void handleCell(final String column, final ContentHandler handler) throws SAXException {
     handler.startElement(URI, TD, TD, EMPTY_ATTRIBUTES);
