@@ -45,18 +45,18 @@
 		<dependency.locations.enabled>false</dependency.locations.enabled>
 
 		<commons-io.version>2.6</commons-io.version>
-		<commons-csv.version>1.5</commons-csv.version>
+		<commons-csv.version>1.7</commons-csv.version>
 		<slf4j.version>1.7.25</slf4j.version>
 		<tika.version>1.22</tika.version>
-		<jbig2-imageio.version>3.0.1</jbig2-imageio.version>
+		<jbig2-imageio.version>3.0.2</jbig2-imageio.version>
 		<guava.version>25.1-jre</guava.version>
-		<jsoup.version>1.11.3</jsoup.version>
+		<jsoup.version>1.12.1</jsoup.version>
 
-		<assertj.version>3.10.0</assertj.version>
+		<assertj.version>3.13.2</assertj.version>
 		<junit.version>4.12</junit.version>
 		<!-- there is something odd with versioning of the expected-failure plugin -->
 		<junit.expected-failure.version>0.0.9</junit.expected-failure.version>
-		<mockito.version>2.19.0</mockito.version>
+		<mockito.version>3.0.0</mockito.version>
 
 		<maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
 		<maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
@@ -411,7 +411,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.10.4</version>
+						<version>3.1.0</version>
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
