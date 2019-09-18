@@ -5,7 +5,7 @@
 
 	<groupId>io.committed.krill</groupId>
 	<artifactId>krill</artifactId>
-	<version>1.1.0</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<name>krill</name>
 	<description>Uses Apache Tika (https://tika.apache.org/) and PDFBox (https://pdfbox.apache.org/) with subsequent post processing to generate a HTML representation of a document (PDF, CSV, XLS, etc) together with it metadata.</description>
 	<url>http://github.com/commitd/krill</url>
