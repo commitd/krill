@@ -53,7 +53,7 @@
 		<jsoup.version>1.12.1</jsoup.version>
 
 		<assertj.version>3.13.2</assertj.version>
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<!-- there is something odd with versioning of the expected-failure plugin -->
 		<junit.expected-failure.version>0.0.9</junit.expected-failure.version>
 		<mockito.version>3.0.0</mockito.version>
