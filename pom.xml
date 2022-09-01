@@ -50,7 +50,7 @@
 		<tika.version>1.22</tika.version>
 		<jbig2-imageio.version>3.0.2</jbig2-imageio.version>
 		<guava.version>25.1-jre</guava.version>
-		<jsoup.version>1.12.1</jsoup.version>
+		<jsoup.version>1.15.3</jsoup.version>
 
 		<assertj.version>3.13.2</assertj.version>
 		<junit.version>4.13.1</junit.version>
